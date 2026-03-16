@@ -15,27 +15,29 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-top">
-        <div className="container nav">
-          <Link to="/" className="brand">
-            Đặng Anh Shop
+        <div className="container nav tgdd-topbar">
+          <Link to="/" className="brand tgdd-logo" aria-label="Trang chủ Đặng Anh Shop">
+            <span className="logo-dot" />
+            danganhshop
+            <small>.com</small>
           </Link>
 
-          <div className="header-search">
-            <input placeholder="Bạn tìm gì..." readOnly />
+          <div className="header-search tgdd-search">
+            <input placeholder="Bạn tìm gì hôm nay?" readOnly />
           </div>
 
-          <div className="auth-actions">
+          <div className="auth-actions tgdd-actions">
             {user ? (
               <>
                 <span className="welcome-text">Xin chào, {user.name}</span>
-                <button className="btn btn-outline" onClick={handleLogout}>
+                <button className="quick-box" onClick={handleLogout}>
                   Đăng xuất
                 </button>
               </>
             ) : (
               <>
                 <Link to="/login" className="quick-box">
-                  Đăng nhập
+                  👤 Đăng nhập
                 </Link>
                 <Link to="/register" className="quick-box">
                   Đăng ký
@@ -43,23 +45,27 @@ const Header = () => {
               </>
             )}
             <NavLink to="/cart" className="quick-box">
-              Giỏ hàng ({cartCount})
+              🛒 Giỏ hàng ({cartCount})
             </NavLink>
+            <div className="quick-box location-box">📍 Hồ Chí Minh</div>
           </div>
         </div>
       </div>
 
       <div className="header-bottom">
         <div className="container">
-          <nav className="menu">
-            <NavLink to="/">Trang chủ</NavLink>
-            <NavLink to="/products">Điện thoại</NavLink>
+          <nav className="menu tgdd-menu">
+            <NavLink to="/products">📱 Điện thoại</NavLink>
+            <a href="#">💻 Laptop</a>
+            <a href="#">🎧 Phụ kiện</a>
+            <a href="#">⌚ Smartwatch</a>
+            <a href="#">⌚ Đồng hồ</a>
+            <a href="#">📟 Tablet</a>
+            <a href="#">🖥️ Màn hình, Máy in</a>
+            <a href="#">💳 Sim, Thẻ cào</a>
             {user && <NavLink to="/orders">Đơn hàng</NavLink>}
             {user?.role === 'admin' && <NavLink to="/admin">Quản trị</NavLink>}
-            <a href="#">Laptop</a>
-            <a href="#">Tablet</a>
-            <a href="#">Phụ kiện</a>
-            <a href="#">Khuyến mãi</a>
+            <NavLink to="/">Khuyến mãi online</NavLink>
           </nav>
         </div>
       </div>

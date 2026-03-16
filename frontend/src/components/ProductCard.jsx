@@ -12,7 +12,8 @@ const ProductCard = ({ product }) => {
   return (
     <article className="card product-card">
       {discount > 0 && <span className="discount-badge">Giảm {discount}%</span>}
-      <img src={product.images?.[0] || 'https://via.placeholder.com/280x200'} alt={product.name} />
+      <img src={product.images?.[0] || 'https://via.placeholder.com/280x200?text=San+pham'} alt={product.name} />
+      <span className="installment-pill">Trả chậm 0%</span>
       <h3>
         <Link to={`/products/${product.slug}`}>{product.name}</Link>
       </h3>
@@ -22,7 +23,7 @@ const ProductCard = ({ product }) => {
         {product.salePrice > 0 && <span className="old-price">{product.price.toLocaleString('vi-VN')}đ</span>}
       </div>
       <div className="row">
-        <Link to={`/products/${product.slug}`} className="btn btn-outline">
+        <Link to={`/products/${product.slug}`} className="btn btn-outline product-link-btn">
           Chi tiết
         </Link>
         <button
