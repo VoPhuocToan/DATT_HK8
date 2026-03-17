@@ -1,4 +1,5 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import AdminPage from './admin/AdminPage';
 import AdminRoute from './components/AdminRoute';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -6,9 +7,6 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import BlogPage from './pages/BlogPage';
 import ContactPage from './pages/ContactPage';
-import AdminDashboardPage from './pages/AdminDashboardPage';
-import AdminOrdersPage from './pages/AdminOrdersPage';
-import AdminProductsPage from './pages/AdminProductsPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import HomePage from './pages/HomePage';
@@ -54,7 +52,7 @@ const App = () => {
                 path="/admin"
                 element={
                   <AdminRoute>
-                    <AdminDashboardPage />
+                    <AdminPage />
                   </AdminRoute>
                 }
               />
@@ -62,7 +60,7 @@ const App = () => {
                 path="/admin/products"
                 element={
                   <AdminRoute>
-                    <AdminProductsPage />
+                    <Navigate to="/admin" replace />
                   </AdminRoute>
                 }
               />
@@ -70,7 +68,7 @@ const App = () => {
                 path="/admin/orders"
                 element={
                   <AdminRoute>
-                    <AdminOrdersPage />
+                    <Navigate to="/admin" replace />
                   </AdminRoute>
                 }
               />

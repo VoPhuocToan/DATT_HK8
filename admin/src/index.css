@@ -1,0 +1,99 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.form {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+input,
+textarea,
+select,
+button {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+button {
+  background: #ffd400;
+  color: #111;
+  cursor: pointer;
+  border: none;
+  font-weight: 700;
+}
+
+button.outline {
+  border: 1px solid #d1d5db;
+  background: #fff;
+}
+
+label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+label input[type='checkbox'] {
+  width: auto;
+}
+
+.stats-grid,
+.list-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.mini-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.error {
+  margin: 0;
+  color: #dc2626;
+  font-weight: 600;
+}
