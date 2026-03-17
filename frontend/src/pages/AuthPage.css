@@ -1,0 +1,243 @@
+.auth-wrapper {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f3f7;
+  padding: 20px;
+}
+
+.auth-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Header - dùng màu vàng đồng bộ với trang */
+.auth-header {
+  background: #ffd400;
+  padding: 28px 24px 24px;
+  text-align: center;
+  color: #111827;
+}
+
+.auth-header h1 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.auth-header h1 svg {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.auth-header p {
+  font-size: 0.92rem;
+  color: #374151;
+  margin: 0;
+}
+
+/* Body */
+.auth-body {
+  padding: 24px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Field */
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.auth-field label {
+  font-size: 0.93rem;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* SVG icons - màu đen */
+.field-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #111827;
+  flex-shrink: 0;
+}
+
+.field-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.required {
+  color: #e53e3e;
+}
+
+.auth-field input {
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.93rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.auth-field input:focus {
+  border-color: #ffd400;
+  box-shadow: 0 0 0 3px rgba(255, 212, 0, 0.2);
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Password input with toggle */
+.input-password {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-password input {
+  padding-right: 44px;
+}
+
+.toggle-pw {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-pw svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.toggle-pw:hover {
+  color: #111827;
+}
+
+/* Remember me */
+.auth-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #374151;
+  cursor: pointer;
+}
+
+.auth-remember input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #ffd400;
+}
+
+/* Submit button - vàng đồng bộ */
+.auth-btn {
+  background: #ffd400;
+  color: #111111;
+  border: none;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.auth-btn:hover {
+  background: #f5c800;
+  box-shadow: 0 4px 12px rgba(255, 212, 0, 0.4);
+}
+
+.auth-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Links */
+.auth-switch {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.auth-switch a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.auth-home {
+  text-align: center;
+  margin: 0;
+}
+
+.auth-home a {
+  color: #2563eb;
+  font-size: 0.9rem;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.auth-home a:hover {
+  text-decoration: underline;
+}
+
+.auth-home svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Error */
+.auth-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  margin: 0;
+}

@@ -55,17 +55,16 @@ const Header = () => {
       <div className="header-bottom">
         <div className="container">
           <nav className="menu tgdd-menu">
+            <NavLink to="/" end>🏠 Trang chủ</NavLink>
             <NavLink to="/products">📱 Điện thoại</NavLink>
             <a href="#">💻 Laptop</a>
             <a href="#">🎧 Phụ kiện</a>
             <a href="#">⌚ Smartwatch</a>
-            <a href="#">⌚ Đồng hồ</a>
             <a href="#">📟 Tablet</a>
-            <a href="#">🖥️ Màn hình, Máy in</a>
-            <a href="#">💳 Sim, Thẻ cào</a>
+            <NavLink to="/blog">📝 Bài viết</NavLink>
+            <NavLink to="/contact">📞 Liên hệ</NavLink>
             {user && <NavLink to="/orders">Đơn hàng</NavLink>}
             {user?.role === 'admin' && <NavLink to="/admin">Quản trị</NavLink>}
-            <NavLink to="/">Khuyến mãi online</NavLink>
           </nav>
         </div>
       </div>
