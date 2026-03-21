@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AdminPage from './admin/AdminPage';
 import AdminRoute from './components/AdminRoute';
+import Footer from './components/Footer';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
@@ -25,55 +26,22 @@ const App = () => {
           <main className="container page-content">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/products" element={<ProductsPage categorySlug="dien-thoai" pageTitle="Điện thoại" />} />
+              <Route path="/laptops" element={<ProductsPage categorySlug="laptop" pageTitle="Laptop" />} />
               <Route path="/products/:slug" element={<ProductDetailPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route
-                path="/checkout"
-                element={
-                  <ProtectedRoute>
-                    <CheckoutPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/orders"
-                element={
-                  <ProtectedRoute>
-                    <OrdersPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <AdminRoute>
-                    <AdminPage />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/products"
-                element={
-                  <AdminRoute>
-                    <Navigate to="/admin" replace />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/orders"
-                element={
-                  <AdminRoute>
-                    <Navigate to="/admin" replace />
-                  </AdminRoute>
-                }
-              />
+              <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
+              <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
+              <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+              <Route path="/admin/products" element={<AdminRoute><Navigate to="/admin" replace /></AdminRoute>} />
+              <Route path="/admin/orders" element={<AdminRoute><Navigate to="/admin" replace /></AdminRoute>} />
             </Routes>
           </main>
+          <Footer />
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

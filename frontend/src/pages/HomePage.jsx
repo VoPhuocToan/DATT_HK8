@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import ProductCard from '../components/ProductCard';
+import FlashSale from '../components/FlashSale';
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -11,7 +12,6 @@ const HomePage = () => {
       const { data } = await api.get('/products?featured=true&limit=8');
       setProducts(data.items || []);
     };
-
     fetchFeatured();
   }, []);
 
@@ -29,42 +29,10 @@ const HomePage = () => {
         <div className="hero-visual" aria-hidden="true" />
       </section>
 
-      <section className="section-block promo-section">
-        <h2 className="section-title">Khuyến mãi online</h2>
-        <div className="promo-topics">
-          <span className="topic-tag active">Flash sale giá sốc</span>
-          <span className="topic-tag">Giảm đến 50%</span>
-          <span className="topic-tag">Online only</span>
-          <span className="topic-link">Điện thoại</span>
-          <span className="topic-link">Apple</span>
-          <span className="topic-link">Laptop</span>
-          <span className="topic-link">Phụ kiện</span>
-          <span className="topic-link">Đồng hồ</span>
-        </div>
+      <FlashSale />
 
-        <div className="flash-timeline">
-          <div className="timeline-item active">
-            <strong>Chỉ còn:</strong>
-            <span>01 : 24 : 11</span>
-          </div>
-          <div className="timeline-item">
-            <strong>Sắp diễn ra</strong>
-            <span>21:30</span>
-          </div>
-          <div className="timeline-item">
-            <strong>Ngày mai</strong>
-            <span>00:00</span>
-          </div>
-          <div className="timeline-item">
-            <strong>Ngày mai</strong>
-            <span>09:00</span>
-          </div>
-          <div className="timeline-item">
-            <strong>Ngày mai</strong>
-            <span>12:00</span>
-          </div>
-        </div>
-
+      <section className="section-block">
+        <h2 className="section-title">Sản phẩm nổi bật</h2>
         <div className="grid products-grid">
           {products.map((product) => (
             <ProductCard key={product._id} product={product} />

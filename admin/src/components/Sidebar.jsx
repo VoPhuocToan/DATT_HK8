@@ -20,7 +20,7 @@ const Sidebar = ({ active, onNavigate }) => {
       <div className="sidebar-header">
         <span className="sidebar-logo">🛒</span>
         <div>
-          <div className="sidebar-title">Đặng Anh Shop</div>
+          <div className="sidebar-title">Đặng Anh Mobile</div>
           <div className="sidebar-sub">Admin Panel</div>
         </div>
       </div>

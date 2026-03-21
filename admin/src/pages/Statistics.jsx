@@ -195,7 +195,7 @@ const Statistics = () => {
           <div className="card">
             <div className="stats-section-header slow">
               <div>
-                <div className="stats-section-title">⚠️ Top 10 Sản phẩm bán ế</div>
+                <div className="stats-section-title">⚠️ Top 10 Sản phẩm bán chậm</div>
                 <div className="stats-section-sub">Danh sách 10 sản phẩm có lượt bán thấp nhất · {filterLabel()}</div>
               </div>
             </div>
