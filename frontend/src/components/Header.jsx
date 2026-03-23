@@ -64,8 +64,8 @@ const Header = () => {
             <NavLink to="/" end>Trang chủ</NavLink>
             <NavLink to="/products">📱 Điện thoại</NavLink>
             <NavLink to="/laptops">💻 Laptop</NavLink>
-            <a href="#">🎧 Phụ kiện</a>
-            <a href="#">⌚ Smartwatch</a>
+            <NavLink to="/accessories">🎧 Phụ kiện</NavLink>
+            <NavLink to="/smartwatch">⌚ Smartwatch</NavLink>
             <a href="#">📟 Tablet</a>
             <NavLink to="/blog">📝 Bài viết</NavLink>
             <NavLink to="/contact">📞 Liên hệ</NavLink>

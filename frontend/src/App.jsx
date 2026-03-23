@@ -28,6 +28,8 @@ const App = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/products" element={<ProductsPage categorySlug="dien-thoai" pageTitle="Điện thoại" />} />
               <Route path="/laptops" element={<ProductsPage categorySlug="laptop" pageTitle="Laptop" />} />
+              <Route path="/smartwatch" element={<ProductsPage categorySlug="smartwatch" pageTitle="Smartwatch" />} />
+              <Route path="/accessories" element={<ProductsPage categorySlug="phu-kien" pageTitle="Phụ kiện" />} />
               <Route path="/products/:slug" element={<ProductDetailPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/blog" element={<BlogPage />} />
