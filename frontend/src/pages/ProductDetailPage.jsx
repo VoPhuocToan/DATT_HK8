@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
+import { addToRecentlyViewed } from '../components/RecentlyViewed';
 
 /* ── Star rating display ── */
 const Stars = ({ rating, size = 16 }) => {
@@ -56,6 +57,7 @@ const ProductDetailPage = () => {
     api.get(`/products/${slug}`).then(({ data }) => {
       setProduct(data);
       setMainImg(0);
+      addToRecentlyViewed(data);
       // Load related
       api.get(`/products?limit=5`).then(({ data: rd }) => {
         setRelated((rd.items || []).filter((p) => p.slug !== slug));

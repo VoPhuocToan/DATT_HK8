@@ -39,12 +39,35 @@ const Header = () => {
 
             {user ? (
               <div className="header-action-btn header-user-wrap">
-                <span className="header-action-icon">👤</span>
+                <span className="header-user-avatar">👤</span>
                 <span className="header-action-label">{user.name}</span>
+                <span className="header-user-caret">▾</span>
                 <div className="header-user-dropdown">
-                  {user.role === 'admin' && <NavLink to="/admin">Quản trị</NavLink>}
-                  <NavLink to="/orders">Đơn hàng</NavLink>
-                  <button onClick={handleLogout}>Đăng xuất</button>
+                  <div className="header-user-dropdown-header">
+                    <span className="header-user-avatar-lg">👤</span>
+                    <span className="header-user-dropdown-name">{user.name}</span>
+                  </div>
+                  <div className="header-user-dropdown-body">
+                    {user.role === 'admin' && (
+                      <NavLink to="/admin" className="hud-item">
+                        <span className="hud-icon">⚙️</span> Quản trị
+                      </NavLink>
+                    )}
+                    <NavLink to="/profile" className="hud-item">
+                      <span className="hud-icon">👤</span> Thông tin cá nhân
+                    </NavLink>
+                    <NavLink to="/orders" className="hud-item">
+                      <span className="hud-icon">🛍️</span> Đơn hàng của tôi
+                    </NavLink>
+                    <NavLink to="/wishlist" className="hud-item">
+                      <span className="hud-icon">❤️</span> Sản phẩm yêu thích
+                    </NavLink>
+                  </div>
+                  <div className="header-user-dropdown-footer">
+                    <button onClick={handleLogout} className="hud-logout">
+                      <span className="hud-icon">↪️</span> Đăng xuất
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (

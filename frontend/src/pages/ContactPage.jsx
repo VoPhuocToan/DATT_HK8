@@ -89,7 +89,7 @@ const ContactPage = () => {
         <div className="ct-map-wrap">
           <iframe
             title="Đặng Anh Shop Location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4946681007846!2d106.69765!3d10.77609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f4670702e31%3A0xa5777fb3a5bb9972!2zMTI2IE5ndXnhu4VuIFRoacOqbiBUaOG6rW5oLCBQaMaw4budbmcgNSwgUXXhuq1uIDMsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1710000000000"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.8!2d106.6138!3d10.7553!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752c9b7b3b3b3b%3A0x0!2zMTE3IE5ndXnhu4VuIFRo4buLIFTDuiwgQsOsbmggVMOibiwgVFAuIEjhu5MgQ2jDrSBNaW5o!5e0!3m2!1svi!2s!4v1710000000000&q=117+Nguy%E1%BB%85n+Th%E1%BB%8B+T%C3%BA%2C+B%C3%ACnh+T%C3%A2n%2C+H%E1%BB%93+Ch%C3%AD+Minh"
             width="100%"
             height="380"
             style={{ border: 0, borderRadius: 12 }}
@@ -104,8 +104,8 @@ const ContactPage = () => {
         <div className="ct-info-card">
           <div className="ct-info-icon" style={{ background: '#7c3aed' }}>📍</div>
           <h3>Địa chỉ</h3>
-          <p>126 Nguyễn Thiện Thành, Phường 5</p>
-          <p>Trà Vinh, Việt Nam</p>
+          <p>117 Nguyễn Thị Tú, Bình Tân</p>
+          <p>TP. Hồ Chí Minh, Việt Nam</p>
         </div>
         <div className="ct-info-card">
           <div className="ct-info-icon" style={{ background: '#7c3aed' }}>📞</div>

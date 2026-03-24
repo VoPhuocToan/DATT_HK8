@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import ProductCard from '../components/ProductCard';
 import FlashSale from '../components/FlashSale';
+import RecentlyViewed from '../components/RecentlyViewed';
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -39,6 +40,8 @@ const HomePage = () => {
           ))}
         </div>
       </section>
+
+      <RecentlyViewed />
     </div>
   );
 };
