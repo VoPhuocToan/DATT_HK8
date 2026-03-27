@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const User = require('../models/User');
+const Product = require('../models/Product');
 
 const calculateSubtotal = (items) =>
   items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -37,6 +38,13 @@ const createOrder = async (req, res) => {
   user.cartItems = [];
   await user.save();
 
+  // Tăng sold cho từng sản phẩm
+  await Promise.all(
+    orderItems.map((item) =>
+      Product.findByIdAndUpdate(item.product, { $inc: { sold: item.quantity } })
+    )
+  );
+
   return res.status(201).json(order);
 };
 
@@ -58,4 +66,16 @@ const getOrderById = async (req, res) => {
   return res.json(order);
 };
 
-module.exports = { createOrder, getMyOrders, getOrderById };
+const cancelOrder = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) return res.status(404).json({ message: 'Order not found' });
+  if (order.user.toString() !== req.user._id.toString())
+    return res.status(403).json({ message: 'Forbidden' });
+  if (!['pending', 'confirmed'].includes(order.orderStatus))
+    return res.status(400).json({ message: 'Không thể hủy đơn hàng ở trạng thái này' });
+  order.orderStatus = 'cancelled';
+  await order.save();
+  return res.json(order);
+};
+
+module.exports = { createOrder, getMyOrders, getOrderById, cancelOrder };

@@ -25,6 +25,8 @@ const productSchema = new mongoose.Schema(
     rating: { type: Number, default: 0, min: 0, max: 5 },
     numReviews: { type: Number, default: 0 },
     isFeatured: { type: Boolean, default: false },
+    sold: { type: Number, default: 0, min: 0 },
+    isVisible: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

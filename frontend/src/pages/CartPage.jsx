@@ -99,10 +99,28 @@ const CartPage = () => {
                       onClick={() => item.quantity > 1 && updateItem(p._id, item.quantity - 1)}
                       disabled={item.quantity <= 1}
                     >−</button>
-                    <span className="cart-qty-val">{item.quantity}</span>
+                    <input
+                      type="number"
+                      className="cart-qty-input"
+                      value={item.quantity}
+                      min={1}
+                      max={p.stock}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (isNaN(val) || val < 1) return;
+                        if (val > p.stock) return;
+                        updateItem(p._id, val);
+                      }}
+                      onBlur={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (isNaN(val) || val < 1) updateItem(p._id, 1);
+                        else if (val > p.stock) updateItem(p._id, p.stock);
+                      }}
+                    />
                     <button
                       className="cart-qty-btn"
-                      onClick={() => updateItem(p._id, item.quantity + 1)}
+                      onClick={() => item.quantity < p.stock && updateItem(p._id, item.quantity + 1)}
+                      disabled={item.quantity >= p.stock}
                     >+</button>
                   </div>
                   <span className="cart-line-total">{fmt(lineTotal)}</span>
@@ -151,7 +169,10 @@ const CartPage = () => {
           <button
             className="btn cart-checkout-btn"
             disabled={selectedItems.length === 0}
-            onClick={() => navigate(user ? '/checkout' : '/login')}
+            onClick={() => {
+            sessionStorage.setItem('checkout_selected', JSON.stringify([...selected]));
+            navigate(user ? '/checkout' : '/login');
+          }}
           >
             💳 Thanh toán ({selectedItems.length})
           </button>

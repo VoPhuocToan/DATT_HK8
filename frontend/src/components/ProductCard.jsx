@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useWishlist } from '../context/WishlistContext';
 
 const stripStorage = (name) =>
   name.replace(/\b(64|128|256|512|1T|1TB)\s*GB\b/gi, '').replace(/\s{2,}/g, ' ').trim();
@@ -16,7 +16,8 @@ const getPrimaryImage = (images) => {
 const ProductCard = ({ product }) => {
   const { addItem } = useCart();
   const { user } = useAuth();
-  const [liked, setLiked] = useState(false);
+  const { toggle, isLiked } = useWishlist();
+  const liked = isLiked(product._id);
   const displayName = stripStorage(product.name);
   const primaryImage = getPrimaryImage(product.images);
 
@@ -105,7 +106,7 @@ const ProductCard = ({ product }) => {
           <span className="pc-rating">⭐ {Number(rating).toFixed(1)}</span>
           <button
             className={`pc-wish-btn ${liked ? 'liked' : ''}`}
-            onClick={(e) => { e.preventDefault(); setLiked(!liked); }}
+            onClick={(e) => { e.preventDefault(); toggle(product); }}
             aria-label="Yêu thích"
           >
             {liked ? '❤️' : '🤍'} Yêu thích

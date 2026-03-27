@@ -7,10 +7,9 @@ const Customers = () => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    api.get('/admin/customers').then(({ data }) => {
-      setCustomers(data || []);
-      setLoading(false);
-    });
+    api.get('/admin/customers')
+      .then(({ data }) => { setCustomers(data || []); setLoading(false); })
+      .catch(() => { setCustomers([]); setLoading(false); });
   }, []);
 
   const filtered = customers.filter(

@@ -89,7 +89,7 @@ const Header = () => {
             <NavLink to="/laptops">💻 Laptop</NavLink>
             <NavLink to="/accessories">🎧 Phụ kiện</NavLink>
             <NavLink to="/smartwatch">⌚ Smartwatch</NavLink>
-            <a href="#">📟 Tablet</a>
+            <NavLink to="/tablet">📟 Tablet</NavLink>
             <NavLink to="/blog">📝 Bài viết</NavLink>
             <NavLink to="/contact">📞 Liên hệ</NavLink>
           </nav>

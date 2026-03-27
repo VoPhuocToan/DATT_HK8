@@ -8,6 +8,7 @@ const YEARS = Array.from({ length: 5 }, (_, i) => THIS_YEAR - i);
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 
 const RANK_COLORS = ['#f59e0b', '#94a3b8', '#f97316'];
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5173';
 
 const RankBadge = ({ rank }) => (
   <span style={{
@@ -44,9 +45,12 @@ const ProductTable = ({ products, type }) => (
           <td><RankBadge rank={i + 1} /></td>
           <td>
             <img
-              src={p.image || 'https://placehold.co/44'}
+              src={p.image ? `${FRONTEND_URL}${p.image}` : 'https://placehold.co/44'}
               alt={p.name}
               className="product-thumb"
+              onError={(e) => {
+                e.target.src = 'https://placehold.co/44';
+              }}
             />
           </td>
           <td>
@@ -105,13 +109,18 @@ const Statistics = () => {
 
   const load = async () => {
     setLoading(true);
-    const params = buildRange();
-    const { data: d } = await api.get('/admin/product-stats', { params });
-    setData(d);
-    setLoading(false);
+    try {
+      const params = buildRange();
+      const { data: d } = await api.get('/admin/product-stats', { params });
+      setData(d);
+    } catch {
+      setData({ topSelling: [], topSlow: [] });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [filterType, month, year]);
 
   const filterLabel = () => {
     if (filterType === 'all') return 'Tất cả thời gian';

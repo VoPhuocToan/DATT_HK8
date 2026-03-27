@@ -16,10 +16,9 @@ const Revenue = () => {
   const [toDate, setToDate] = useState('');
 
   useEffect(() => {
-    api.get('/admin/orders').then(({ data }) => {
-      setOrders(data || []);
-      setLoading(false);
-    });
+    api.get('/admin/orders')
+      .then(({ data }) => { setOrders(data || []); setLoading(false); })
+      .catch(() => { setOrders([]); setLoading(false); });
   }, []);
 
   const filtered = orders.filter((o) => {

@@ -19,6 +19,11 @@ const buildQuery = (query) => {
     filter.isFeatured = true;
   }
 
+  // Mặc định chỉ hiện sản phẩm đang visible (trừ khi admin xem all)
+  if (query.showHidden !== 'true') {
+    filter.isVisible = { $ne: false };
+  }
+
   if (query.minPrice || query.maxPrice) {
     filter.price = {};
     if (query.minPrice) filter.price.$gte = Number(query.minPrice);
@@ -39,7 +44,13 @@ const getProducts = async (req, res) => {
     price_asc: { price: 1 },
     price_desc: { price: -1 },
     popular: { numReviews: -1 },
+    best_selling: { sold: -1 },
   };
+
+  // Lọc còn hàng nếu có query instock=true
+  if (req.query.instock === 'true') {
+    filter.stock = { $gt: 0 };
+  }
 
   const [items, total] = await Promise.all([
     Product.find(filter)
@@ -95,10 +106,19 @@ const deleteProduct = async (req, res) => {
   return res.json({ message: 'Product deleted' });
 };
 
+const toggleVisibility = async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) return res.status(404).json({ message: 'Product not found' });
+  product.isVisible = !product.isVisible;
+  await product.save();
+  return res.json({ isVisible: product.isVisible });
+};
+
 module.exports = {
   getProducts,
   getProductBySlug,
   createProduct,
   updateProduct,
   deleteProduct,
+  toggleVisibility,
 };

@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import { addToRecentlyViewed } from '../components/RecentlyViewed';
+import { useWishlist } from '../context/WishlistContext';
 
 /* ── Star rating display ── */
 const Stars = ({ rating, size = 16 }) => {
@@ -41,6 +42,7 @@ const ProductDetailPage = () => {
   const { slug } = useParams();
   const { addItem } = useCart();
   const { user } = useAuth();
+  const { toggle, isLiked } = useWishlist();
 
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
@@ -101,8 +103,8 @@ const ProductDetailPage = () => {
           <h1 className="pd-title">{product.name}</h1>
 
           <div className="pd-quick-actions">
-            <button className={`pd-action-btn ${liked ? 'liked' : ''}`} onClick={() => setLiked(!liked)}>
-              {liked ? '❤️' : '🤍'} Yêu thích
+            <button className={`pd-action-btn ${isLiked(product._id) ? 'liked' : ''}`} onClick={() => toggle(product)}>
+              {isLiked(product._id) ? '❤️' : '🤍'} Yêu thích
             </button>
             <span className="pd-action-sep">|</span>
             <button className="pd-action-btn" onClick={() => setTab('desc')}>💬 Hỏi đáp</button>

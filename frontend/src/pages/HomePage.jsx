@@ -10,7 +10,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchFeatured = async () => {
-      const { data } = await api.get('/products?featured=true&limit=8');
+      const { data } = await api.get('/products?sort=best_selling&instock=true&limit=15');
       setProducts(data.items || []);
     };
     fetchFeatured();

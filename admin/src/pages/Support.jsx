@@ -153,11 +153,13 @@ const Support = () => {
                 <td>{t.subject}</td>
                 <td><StatusBadge status={t.status} /></td>
                 <td style={{ fontSize: 12, color: '#64748b' }}>{new Date(t.createdAt).toLocaleDateString('vi-VN')}</td>
-                <td className="action-cell">
-                  <button className="btn-sm btn-primary" onClick={() => { setSelected(t); setReply(''); }}>Xem</button>
-                  {t.status === 'pending' && (
-                    <button className="btn-sm btn-outline" onClick={() => handleUpdateStatus(t.id, 'processing')}>Tiếp nhận</button>
-                  )}
+                <td>
+                  <div className="action-cell">
+                    <button className="btn-sm btn-primary" onClick={() => { setSelected(t); setReply(''); }}>Xem</button>
+                    {t.status === 'pending' && (
+                      <button className="btn-sm btn-outline" onClick={() => handleUpdateStatus(t.id, 'processing')}>Tiếp nhận</button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

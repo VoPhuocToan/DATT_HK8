@@ -49,7 +49,30 @@ const login = async (req, res) => {
 };
 
 const getProfile = async (req, res) => {
-  return res.json(req.user);
+  const user = await User.findById(req.user._id).select('-password -cartItems');
+  return res.json(user);
 };
 
-module.exports = { register, login, getProfile };
+const updateProfile = async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  const { name, phone, address } = req.body;
+  if (name) user.name = name;
+  if (phone !== undefined) user.phone = phone;
+  if (address) user.address = { ...user.address.toObject(), ...address };
+
+  await user.save();
+
+  return res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role,
+    address: user.address,
+    createdAt: user.createdAt,
+  });
+};
+
+module.exports = { register, login, getProfile, updateProfile };

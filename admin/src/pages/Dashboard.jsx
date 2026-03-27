@@ -101,13 +101,18 @@ const Dashboard = () => {
   const [revenueTab, setRevenueTab] = useState('week'); // week | month | quarter
 
   useEffect(() => {
-    api.get('/admin/stats').then(({ data }) => {
-      setStats(data);
-      setLoading(false);
-    });
+    api.get('/admin/stats')
+      .then(({ data }) => { setStats(data); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   if (loading) return <div className="page-loading">Đang tải...</div>;
+
+  if (!stats) return (
+    <div className="page-loading" style={{ color: '#e53e3e' }}>
+      Không thể tải dữ liệu. Vui lòng kiểm tra kết nối server.
+    </div>
+  );
 
   const revenue = Number(stats.revenue || 0);
 

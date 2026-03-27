@@ -19,9 +19,14 @@ const Orders = () => {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await api.get('/admin/orders');
-    setOrders(data || []);
-    setLoading(false);
+    try {
+      const { data } = await api.get('/admin/orders');
+      setOrders(data || []);
+    } catch {
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, []);

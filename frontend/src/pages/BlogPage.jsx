@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ARTICLES } from '../data/articles';
 
 /* ── Mock data ── */
 const HOT_TOPICS = [
@@ -11,75 +12,6 @@ const HOT_TOPICS = [
   { id: 6, tag: '#Apple Watch Ultra',   img: '/apple-watch-ultra-1.webp' },
   { id: 7, tag: '#Samsung Z Fold 7',    img: '/samsung-galaxy-z-fold-7-1.webp' },
   { id: 8, tag: '#Huawei Watch GT 10',  img: '/huawai-watch-gt-10-1.webp' },
-];
-
-const ARTICLES = [
-  {
-    id: 1,
-    category: 'Đánh giá',
-    categoryColor: '#e53e3e',
-    title: 'Đánh giá iPhone 17 Pro Max: Chip A19 Pro mạnh nhất từ trước đến nay, camera nâng cấp vượt bậc',
-    excerpt: 'iPhone 17 Pro Max mang đến chip A19 Pro với hiệu năng đột phá, hệ thống camera 48MP cải tiến và màn hình ProMotion 120Hz sắc nét hơn bao giờ hết...',
-    author: 'Đặng Anh',
-    date: '24/03/2026 10:32',
-    img: '/iphone-17-pro_1.webp',
-    featured: true,
-  },
-  {
-    id: 2,
-    category: 'Tin tức',
-    categoryColor: '#2563eb',
-    title: 'Samsung Galaxy Z Fold 7 ra mắt: Màn hình gập 7.6 inch, chip Snapdragon 8 Elite, giá từ 39 triệu',
-    excerpt: 'Samsung chính thức trình làng Galaxy Z Fold 7 với thiết kế mỏng hơn, màn hình lớn hơn và hiệu năng mạnh mẽ hơn thế hệ trước...',
-    author: 'Minh Tuấn',
-    date: '24/03/2026 09:15',
-    img: '/samsung-galaxy-z-fold-7-1.webp',
-    featured: false,
-  },
-  {
-    id: 3,
-    category: 'Mở hộp',
-    categoryColor: '#7c3aed',
-    title: 'Mở hộp MacBook Pro M5: Hiệu năng "quái vật", pin 22 giờ, xứng đáng từng đồng',
-    excerpt: 'MacBook Pro M5 vừa về tay, cùng trải nghiệm ngay chiếc laptop mạnh nhất của Apple với chip M5 thế hệ mới...',
-    author: 'Jay Nguyen',
-    date: '23/03/2026 17:47',
-    img: '/apple-macbook-m5-1.webp',
-    featured: false,
-  },
-  {
-    id: 4,
-    category: 'Cận cảnh',
-    categoryColor: '#d97706',
-    title: 'Cận cảnh Apple Watch Ultra 2: Vỏ titan sang trọng, pin 60 giờ, dành cho người yêu thể thao',
-    excerpt: 'Apple Watch Ultra 2 với thiết kế titan cao cấp, màn hình 49mm sáng nhất và pin lên đến 60 giờ là lựa chọn hoàn hảo cho dân thể thao...',
-    author: 'Hải Trần',
-    date: '23/03/2026 16:56',
-    img: '/apple-watch-ultra-1.webp',
-    featured: false,
-  },
-  {
-    id: 5,
-    category: 'Đánh giá',
-    categoryColor: '#e53e3e',
-    title: 'Đánh giá Xiaomi 17 Ultra: Camera Leica 200MP, sạc 90W, đối thủ xứng tầm iPhone 17 Pro',
-    excerpt: 'Xiaomi 17 Ultra với hệ thống camera Leica 200MP và sạc siêu nhanh 90W đang là cái tên đáng chú ý nhất phân khúc flagship Android...',
-    author: 'Đặng Anh',
-    date: '22/03/2026 14:20',
-    img: '/dien-thoai-xiaomi-17-ultra-1.webp',
-    featured: false,
-  },
-  {
-    id: 6,
-    category: 'Tin tức',
-    categoryColor: '#2563eb',
-    title: 'Huawei Watch GT 10 ra mắt: Pin 14 ngày, theo dõi sức khỏe AI, giá chỉ 6.490.000đ',
-    excerpt: 'Huawei Watch GT 10 gây ấn tượng với thời lượng pin lên đến 14 ngày và các tính năng theo dõi sức khỏe được hỗ trợ bởi AI...',
-    author: 'Minh Tuấn',
-    date: '22/03/2026 11:05',
-    img: '/huawai-watch-gt-10-1.webp',
-    featured: false,
-  },
 ];
 
 const CATEGORIES = ['Tất cả', 'Đánh giá', 'Tin tức', 'Mở hộp', 'Cận cảnh', 'Thủ thuật'];
