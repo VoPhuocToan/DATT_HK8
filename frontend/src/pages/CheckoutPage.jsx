@@ -85,6 +85,7 @@ const CheckoutPage = () => {
         paymentMethod: form.paymentMethod,
         note: form.note,
         shippingFee,
+        selectedProductIds: selectedIds, // Gửi danh sách ID sản phẩm được chọn
       });
       await fetchCart();
       navigate('/orders');

@@ -1,16 +1,43 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import SearchBox from './SearchBox';
 
 const Header = () => {
   const { user, logout } = useAuth();
   const { cartCount } = useCart();
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleLogout = () => {
     logout();
     navigate('/');
+    setIsDropdownOpen(false);
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleDropdownItemClick = () => {
+    setIsDropdownOpen(false);
+  };
+
+  // Đóng dropdown khi click bên ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="header">
@@ -25,8 +52,7 @@ const Header = () => {
 
           {/* Search */}
           <div className="header-search-wrap">
-            <span className="header-search-icon">🔍</span>
-            <input className="header-search-input" placeholder="Bạn muốn mua gì hôm nay?" readOnly />
+            <SearchBox />
           </div>
 
           {/* Actions */}
@@ -38,28 +64,30 @@ const Header = () => {
             </NavLink>
 
             {user ? (
-              <div className="header-action-btn header-user-wrap">
-                <span className="header-user-avatar">👤</span>
-                <span className="header-action-label">{user.name}</span>
-                <span className="header-user-caret">▾</span>
-                <div className="header-user-dropdown">
+              <div className="header-action-btn header-user-wrap" ref={dropdownRef}>
+                <div className="header-user-trigger" onClick={toggleDropdown}>
+                  <span className="header-user-avatar">👤</span>
+                  <span className="header-action-label">{user.name}</span>
+                  <span className="header-user-caret">▾</span>
+                </div>
+                <div className={`header-user-dropdown ${isDropdownOpen ? 'show' : ''}`}>
                   <div className="header-user-dropdown-header">
                     <span className="header-user-avatar-lg">👤</span>
                     <span className="header-user-dropdown-name">{user.name}</span>
                   </div>
                   <div className="header-user-dropdown-body">
                     {user.role === 'admin' && (
-                      <NavLink to="/admin" className="hud-item">
+                      <NavLink to="/admin" className="hud-item" onClick={handleDropdownItemClick}>
                         <span className="hud-icon">⚙️</span> Quản trị
                       </NavLink>
                     )}
-                    <NavLink to="/profile" className="hud-item">
+                    <NavLink to="/profile" className="hud-item" onClick={handleDropdownItemClick}>
                       <span className="hud-icon">👤</span> Thông tin cá nhân
                     </NavLink>
-                    <NavLink to="/orders" className="hud-item">
+                    <NavLink to="/orders" className="hud-item" onClick={handleDropdownItemClick}>
                       <span className="hud-icon">🛍️</span> Đơn hàng của tôi
                     </NavLink>
-                    <NavLink to="/wishlist" className="hud-item">
+                    <NavLink to="/wishlist" className="hud-item" onClick={handleDropdownItemClick}>
                       <span className="hud-icon">❤️</span> Sản phẩm yêu thích
                     </NavLink>
                   </div>
@@ -85,7 +113,7 @@ const Header = () => {
         <div className="container">
           <nav className="header-nav">
             <NavLink to="/" end>Trang chủ</NavLink>
-            <NavLink to="/products">📱 Điện thoại</NavLink>
+            <NavLink to="/dien-thoai">📱 Điện thoại</NavLink>
             <NavLink to="/laptops">💻 Laptop</NavLink>
             <NavLink to="/accessories">🎧 Phụ kiện</NavLink>
             <NavLink to="/smartwatch">⌚ Smartwatch</NavLink>

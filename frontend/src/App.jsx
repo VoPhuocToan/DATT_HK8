@@ -31,7 +31,8 @@ const App = () => {
           <main className="container page-content">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/products" element={<ProductsPage categorySlug="dien-thoai" pageTitle="Điện thoại" />} />
+              <Route path="/products" element={<ProductsPage pageTitle="Tất cả sản phẩm" />} />
+              <Route path="/dien-thoai" element={<ProductsPage categorySlug="dien-thoai" pageTitle="Điện thoại" />} />
               <Route path="/laptops" element={<ProductsPage categorySlug="laptop" pageTitle="Laptop" />} />
               <Route path="/smartwatch" element={<ProductsPage categorySlug="smartwatch" pageTitle="Smartwatch" />} />
               <Route path="/accessories" element={<ProductsPage categorySlug="phu-kien" pageTitle="Phụ kiện" />} />

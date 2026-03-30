@@ -23,7 +23,7 @@ const HomePage = () => {
           <p className="hero-badge">danganhshop x mùa sale tháng 3</p>
           <h1>iPhone 17e</h1>
           <p>Đủ tính năng. Đầy giá trị. Chỉ từ 17.990.000đ</p>
-          <Link to="/products" className="btn hero-cta">
+          <Link to="/dien-thoai" className="btn hero-cta">
             Mua ngay
           </Link>
         </div>

@@ -6,14 +6,27 @@ const calculateSubtotal = (items) =>
   items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
 const createOrder = async (req, res) => {
-  const { shippingAddress, paymentMethod = 'cod', shippingFee = 0, note = '' } = req.body;
+  const { shippingAddress, paymentMethod = 'cod', shippingFee = 0, note = '', selectedProductIds } = req.body;
 
   const user = await User.findById(req.user._id).populate('cartItems.product');
   if (!user.cartItems.length) {
     return res.status(400).json({ message: 'Cart is empty' });
   }
 
-  const orderItems = user.cartItems.map((item) => ({
+  // Nếu có selectedProductIds, chỉ lấy những sản phẩm được chọn
+  // Nếu không có (tương thích ngược), lấy tất cả sản phẩm trong giỏ hàng
+  let cartItemsToOrder = user.cartItems;
+  if (selectedProductIds && selectedProductIds.length > 0) {
+    cartItemsToOrder = user.cartItems.filter(item => 
+      selectedProductIds.includes(item.product._id.toString())
+    );
+  }
+
+  if (!cartItemsToOrder.length) {
+    return res.status(400).json({ message: 'No products selected for order' });
+  }
+
+  const orderItems = cartItemsToOrder.map((item) => ({
     product: item.product._id,
     name: item.product.name,
     image: item.product.images?.[0] || '',
@@ -35,7 +48,15 @@ const createOrder = async (req, res) => {
     note,
   });
 
-  user.cartItems = [];
+  // Chỉ xóa những sản phẩm đã được đặt hàng khỏi giỏ hàng
+  if (selectedProductIds && selectedProductIds.length > 0) {
+    user.cartItems = user.cartItems.filter(item => 
+      !selectedProductIds.includes(item.product._id.toString())
+    );
+  } else {
+    // Tương thích ngược: xóa tất cả nếu không có selectedProductIds
+    user.cartItems = [];
+  }
   await user.save();
 
   // Tăng sold cho từng sản phẩm

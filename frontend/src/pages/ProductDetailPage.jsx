@@ -215,7 +215,6 @@ const ProductDetailPage = () => {
             <div className="pd-promo-item">🎁 Tặng kèm sạc nhanh 20W chính hãng</div>
             <div className="pd-promo-item">🛡️ Bảo hành chính hãng 12 tháng</div>
             <div className="pd-promo-item">🚚 Giao hàng toàn quốc, miễn phí từ 500K</div>
-            <div className="pd-promo-item">💳 Trả góp 0% qua thẻ tín dụng kỳ hạn 3-6 tháng</div>
           </div>
         </div>
       </div>

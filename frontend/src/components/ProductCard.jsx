@@ -48,7 +48,6 @@ const ProductCard = ({ product }) => {
       <div className="pc-top-row">
         {discount > 0 && <span className="pc-badge-discount">Giảm {discount}%</span>}
         {isOutOfStock && !discount && <span className="pc-badge-out">Hết hàng</span>}
-        <span className="pc-badge-installment">Trả góp 0%</span>
       </div>
 
       {/* Image */}
@@ -90,6 +89,11 @@ const ProductCard = ({ product }) => {
               <span className="pc-old-price">{product.price.toLocaleString('vi-VN')}đ</span>
             )}
           </div>
+        )}
+
+        {/* Khi không có giảm giá, để trống phần giá gốc và đẩy spec + footer lên */}
+        {product.salePrice === 0 && (
+          <div className="pc-no-discount-spacer"></div>
         )}
 
         {/* Spec tags */}

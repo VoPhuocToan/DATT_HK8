@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../services/api';
 import ProductCard from '../components/ProductCard';
 
@@ -25,6 +26,7 @@ const STATUS_OPTIONS = [
 ];
 
 const ProductsPage = ({ categorySlug, pageTitle }) => {
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -38,6 +40,15 @@ const ProductsPage = ({ categorySlug, pageTitle }) => {
   const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  // Đọc keyword từ URL parameters
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const urlKeyword = searchParams.get('keyword');
+    if (urlKeyword) {
+      setKeyword(urlKeyword);
+    }
+  }, [location.search]);
 
   const buildParams = (overrides = {}) => {
     const opts = { keyword, brand: selectedBrand, priceIdx, status, sort, page, limit: 100, ...overrides };
@@ -119,6 +130,14 @@ const ProductsPage = ({ categorySlug, pageTitle }) => {
       params.set('page', '1');
       params.set('sort', 'newest');
       if (catId) params.set('category', catId);
+      
+      // Thêm keyword từ URL nếu có
+      const searchParams = new URLSearchParams(location.search);
+      const urlKeyword = searchParams.get('keyword');
+      if (urlKeyword) {
+        params.set('keyword', urlKeyword);
+      }
+      
       const { data } = await api.get(`/products?${params}`);
       let items = data.items || [];
       items = dedupByModel(items);
@@ -126,7 +145,7 @@ const ProductsPage = ({ categorySlug, pageTitle }) => {
       setLoading(false);
     };
     init();
-  }, [categorySlug]);
+  }, [categorySlug, location.search]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -174,13 +193,28 @@ const ProductsPage = ({ categorySlug, pageTitle }) => {
     fetchProducts({ keyword: '', brand: '', priceIdx: 0, status: 'all', sort: 'newest', page: 1 });
   };
 
-  const hasFilter = selectedBrand || priceIdx > 0 || status !== 'all';
+  const hasFilter = keyword || selectedBrand || priceIdx > 0 || status !== 'all';
 
   return (
     <div className="plp-wrap">
       {/* ── Header ── */}
       <div className="plp-header">
         <h1 className="plp-title">{pageTitle || 'Sản phẩm'}</h1>
+        
+        {/* Search trong trang */}
+        <div className="plp-search-section">
+          <form onSubmit={handleSearch} className="plp-search-form">
+            <input
+              type="text"
+              className="plp-search-input"
+              placeholder="Tìm kiếm sản phẩm..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+            <button type="submit" className="plp-search-btn">🔍</button>
+          </form>
+        </div>
+        
         <div className="plp-sort-row">
           <span className="plp-sort-label">Sắp xếp:</span>
           {SORT_OPTIONS.map((o) => (
@@ -266,6 +300,12 @@ const ProductsPage = ({ categorySlug, pageTitle }) => {
           {/* Active filters */}
           {hasFilter && (
             <div className="plp-active-filters">
+              {keyword && (
+                <span className="plp-filter-tag">
+                  Từ khóa: "{keyword}"
+                  <button onClick={() => { setKeyword(''); fetchProducts({ keyword: '', page: 1 }); }}>✕</button>
+                </span>
+              )}
               {selectedBrand && (
                 <span className="plp-filter-tag">
                   Hãng: {selectedBrand}
