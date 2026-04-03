@@ -1,17 +1,28 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import {
+  IconShoppingBag, IconPackage, IconClock, IconTruck,
+  IconCheck, IconX, IconSearch, IconCreditCard, IconStar,
+  IconUser, IconPhone, IconMapPin
+} from '../components/Icons';
+
+const IconCalendar2 = ({ size = 18 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
+);
 
 const FRONTEND_URL = 'http://localhost:5173';
 
 const fmt = (n) => new Intl.NumberFormat('vi-VN').format(n) + ' đ';
 
 const ORDER_TABS = [
-  { key: 'all',       label: '≡ Tất cả' },
-  { key: 'pending',   label: '🕐 Chờ xác nhận' },
-  { key: 'shipping',  label: '🚚 Đang giao' },
-  { key: 'delivered', label: '✅ Đã giao' },
-  { key: 'cancelled', label: '✕ Đã hủy' },
+  { key: 'all',       label: 'Tất cả' },
+  { key: 'pending',   label: 'Chờ xác nhận' },
+  { key: 'shipping',  label: 'Đang giao' },
+  { key: 'delivered', label: 'Đã giao' },
+  { key: 'cancelled', label: 'Đã hủy' },
 ];
 
 const STATUS_MAP = {
@@ -77,7 +88,7 @@ const OrdersPage = () => {
 
   return (
     <div className="ord-page">
-      <h1 className="ord-title">🛍️ Đơn hàng của tôi</h1>
+      <h1 className="ord-title"><IconShoppingBag size={22} style={{ verticalAlign: 'middle', marginRight: 8 }} />Đơn hàng của tôi</h1>
 
       {/* Tabs */}
       <div className="ord-tabs">
@@ -99,7 +110,7 @@ const OrdersPage = () => {
 
       {filtered.length === 0 ? (
         <div className="ord-empty">
-          <div style={{ fontSize: 48 }}>📦</div>
+          <div style={{ fontSize: 48 }}><IconPackage size={48} /></div>
           <p>Không có đơn hàng nào.</p>
           <Link to="/products" className="btn">Mua sắm ngay</Link>
         </div>
@@ -121,7 +132,7 @@ const OrdersPage = () => {
                 <div className="ord-card-header">
                   <div className="ord-card-meta">
                     <span className="ord-id">Mã đơn hàng: <strong>{shortId(order._id)}</strong></span>
-                    <span className="ord-date">📅 {dateStr}</span>
+                    <span className="ord-date"><IconCalendar2 size={13} style={{ verticalAlign: 'middle', marginRight: 3 }} />{dateStr}</span>
                   </div>
                   <div className="ord-badges">
                     <Badge {...st} />
@@ -134,11 +145,11 @@ const OrdersPage = () => {
                 <div className="ord-card-body">
                   {/* Thông tin giao hàng */}
                   <div className="ord-shipping-info">
-                    <div className="ord-shipping-title">ℹ️ Thông tin giao hàng</div>
-                    <div className="ord-shipping-row">👤 Người nhận hàng: <strong>{addr.fullName}</strong></div>
-                    <div className="ord-shipping-row">📞 Số điện thoại: {addr.phone}</div>
+                    <div className="ord-shipping-title">Thông tin giao hàng</div>
+                    <div className="ord-shipping-row"><IconUser size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Người nhận: <strong>{addr.fullName}</strong></div>
+                    <div className="ord-shipping-row"><IconPhone size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Số điện thoại: {addr.phone}</div>
                     <div className="ord-shipping-row">
-                      📍 Địa chỉ: {[addr.detail, addr.ward, addr.district, addr.city].filter(Boolean).join(', ')}
+                      <IconMapPin size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Địa chỉ: {[addr.detail, addr.ward, addr.district, addr.city].filter(Boolean).join(', ')}
                     </div>
                   </div>
 
@@ -173,17 +184,18 @@ const OrdersPage = () => {
                     Tổng tiền: <span className="ord-total-price">{fmt(order.totalPrice)}</span>
                   </div>
                   <div className="ord-actions">
-                    <Link to={`/orders/${order._id}`} className="ord-btn ord-btn-detail">🔍 Chi tiết</Link>
+                    <Link to={`/orders/${order._id}`} className="ord-btn ord-btn-detail"><IconSearch size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Chi tiết</Link>
+                    {order.paymentMethod === 'bank_transfer' && order.paymentStatus === 'pending' && order.orderStatus !== 'cancelled' && (
+                      <Link to={`/payment/qr/${order._id}`} className="ord-btn ord-btn-payment">
+                        <IconCreditCard size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Thanh toán lại
+                      </Link>
+                    )}
                     {order.orderStatus === 'delivered' && (
-                      <button className="ord-btn ord-btn-review">⭐ Đánh giá</button>
+                      <button className="ord-btn ord-btn-review"><IconStar size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Đánh giá</button>
                     )}
                     {canCancel && (
-                      <button
-                        className="ord-btn ord-btn-cancel"
-                        onClick={() => handleCancel(order._id)}
-                        disabled={cancelling === order._id}
-                      >
-                        {cancelling === order._id ? '...' : '✕ Hủy đơn'}
+                      <button className="ord-btn ord-btn-cancel" onClick={() => handleCancel(order._id)} disabled={cancelling === order._id}>
+                        {cancelling === order._id ? '...' : <><IconX size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Hủy đơn</>}
                       </button>
                     )}
                   </div>

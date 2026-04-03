@@ -12,6 +12,9 @@ const productSchema = new mongoose.Schema(
     salePrice: { type: Number, default: 0, min: 0 },
     stock: { type: Number, required: true, min: 0 },
     images: [{ type: String }],
+    mainImageIndex: { type: Number, default: 0 },
+    colors: [{ type: String }],
+    storageOptions: [{ ram: { type: String }, rom: { type: String } }],
     specifications: {
       screen: { type: String, default: '' },
       chipset: { type: String, default: '' },
@@ -27,6 +30,10 @@ const productSchema = new mongoose.Schema(
     isFeatured: { type: Boolean, default: false },
     sold: { type: Number, default: 0, min: 0 },
     isVisible: { type: Boolean, default: true },
+    isFlashSale: { type: Boolean, default: false },
+    flashSalePrice: { type: Number, default: 0, min: 0 },
+    flashSaleStock: { type: Number, default: 0, min: 0 },
+    flashSaleSold: { type: Number, default: 0, min: 0 },
   },
   { timestamps: true }
 );

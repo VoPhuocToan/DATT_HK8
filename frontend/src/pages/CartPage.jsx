@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { IconCart, IconTrash, IconCreditCard, IconArrowLeft } from '../components/Icons';
 
 const fmt = (n) => new Intl.NumberFormat('vi-VN').format(n) + ' đ';
 
@@ -41,7 +42,7 @@ const CartPage = () => {
   if (!items.length) {
     return (
       <div className="cart-empty">
-        <div className="cart-empty-icon">🛒</div>
+      <div className="cart-empty-icon"><IconCart size={48} /></div>
         <h2>Giỏ hàng trống</h2>
         <p>Hãy thêm sản phẩm vào giỏ hàng để tiến hành mua sắm nhé!</p>
         <Link to="/products" className="btn">Mua sắm ngay</Link>
@@ -51,7 +52,7 @@ const CartPage = () => {
 
   return (
     <div className="cart-wrap">
-      <h1 className="cart-title">🛒 Giỏ hàng của bạn</h1>
+      <h1 className="cart-title"><IconCart size={22} style={{ verticalAlign: 'middle', marginRight: 8 }} />Giỏ hàng của bạn</h1>
 
       <div className="cart-layout">
         {/* ── Danh sách sản phẩm ── */}
@@ -125,7 +126,7 @@ const CartPage = () => {
                   </div>
                   <span className="cart-line-total">{fmt(lineTotal)}</span>
                   <button className="cart-remove-btn" onClick={() => removeItem(p._id)} aria-label="Xóa">
-                    🗑
+                    <IconTrash size={16} />
                   </button>
                 </div>
               </div>
@@ -134,7 +135,7 @@ const CartPage = () => {
 
           {/* Xóa toàn bộ */}
           <div className="cart-footer-actions">
-            <button className="cart-clear-btn" onClick={clearAll}>🗑 Xóa toàn bộ giỏ hàng</button>
+            <button className="cart-clear-btn" onClick={clearAll}><IconTrash size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Xóa toàn bộ giỏ hàng</button>
           </div>
         </div>
 
@@ -174,10 +175,10 @@ const CartPage = () => {
             navigate(user ? '/checkout' : '/login');
           }}
           >
-            💳 Thanh toán ({selectedItems.length})
+            <IconCreditCard size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} />Thanh toán ({selectedItems.length})
           </button>
 
-          <Link to="/products" className="cart-continue-btn">← Tiếp tục mua sắm</Link>
+          <Link to="/products" className="cart-continue-btn"><IconArrowLeft size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Tiếp tục mua sắm</Link>
         </aside>
       </div>
     </div>

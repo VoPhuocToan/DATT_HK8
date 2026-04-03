@@ -26,7 +26,7 @@ const Discounts = () => {
   const [filterBrand, setFilterBrand] = useState('');
   const [filterPrice, setFilterPrice] = useState(0);
 
-  const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5173';
+  const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
   const load = async () => {
     setLoading(true);
@@ -164,7 +164,7 @@ const Discounts = () => {
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <img
-                          src={p.images?.[0] ? `${FRONTEND_URL}${p.images[0]}` : 'https://placehold.co/44'}
+                          src={p.images?.[0] ? `${BACKEND_URL}/images${p.images[0]}` : 'https://placehold.co/44'}
                           alt={p.name}
                           className="product-thumb"
                           onError={(e) => { e.target.src = 'https://placehold.co/44'; }}

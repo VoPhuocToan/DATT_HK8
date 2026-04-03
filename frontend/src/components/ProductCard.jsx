@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
+import { getImageUrl } from '../utils/imageUrl';
+import { IconStar, IconStarFill, IconHeart, IconHeartFill } from './Icons';
 
 const stripStorage = (name) =>
   name.replace(/\b(64|128|256|512|1T|1TB)\s*GB\b/gi, '').replace(/\s{2,}/g, ' ').trim();
@@ -53,7 +55,7 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <Link to={`/products/${product.slug}`} className="pc-img-link">
         <img
-          src={primaryImage || '/iphone-17_1.webp'}
+          src={getImageUrl(primaryImage) || '/iphone-17_1.webp'}
           alt={product.name}
           className="pc-img"
         />
@@ -91,29 +93,16 @@ const ProductCard = ({ product }) => {
           </div>
         )}
 
-        {/* Khi không có giảm giá, để trống phần giá gốc và đẩy spec + footer lên */}
-        {product.salePrice === 0 && (
-          <div className="pc-no-discount-spacer"></div>
-        )}
-
-        {/* Spec tags */}
-        {specTags.length > 0 && (
-          <div className="pc-specs">
-            {specTags.map((tag, i) => (
-              <span key={i} className="pc-spec-tag">{tag}</span>
-            ))}
-          </div>
-        )}
 
         {/* Footer: rating + wishlist */}
         <div className="pc-footer">
-          <span className="pc-rating">⭐ {Number(rating).toFixed(1)}</span>
+          <span className="pc-rating"><IconStarFill size={13} style={{ color: '#f59e0b', verticalAlign: 'middle' }} /> {Number(rating).toFixed(1)}</span>
           <button
             className={`pc-wish-btn ${liked ? 'liked' : ''}`}
             onClick={(e) => { e.preventDefault(); toggle(product); }}
             aria-label="Yêu thích"
           >
-            {liked ? '❤️' : '🤍'} Yêu thích
+            {liked ? <IconHeartFill size={14} /> : <IconHeart size={14} />} Yêu thích
           </button>
         </div>
 

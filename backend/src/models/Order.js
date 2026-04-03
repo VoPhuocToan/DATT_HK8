@@ -25,6 +25,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: { type: String, enum: ['cod', 'bank_transfer'], default: 'cod' },
     paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
+    paymentOrderCode: { type: Number }, // PayOS orderCode để tracking
     orderStatus: {
       type: String,
       enum: ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled'],

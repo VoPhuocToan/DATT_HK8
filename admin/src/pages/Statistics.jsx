@@ -8,7 +8,7 @@ const YEARS = Array.from({ length: 5 }, (_, i) => THIS_YEAR - i);
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 
 const RANK_COLORS = ['#f59e0b', '#94a3b8', '#f97316'];
-const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5173';
+const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 const RankBadge = ({ rank }) => (
   <span style={{
@@ -45,7 +45,7 @@ const ProductTable = ({ products, type }) => (
           <td><RankBadge rank={i + 1} /></td>
           <td>
             <img
-              src={p.image ? `${FRONTEND_URL}${p.image}` : 'https://placehold.co/44'}
+              src={p.image ? `${BACKEND_URL}/images${p.image}` : 'https://placehold.co/44'}
               alt={p.name}
               className="product-thumb"
               onError={(e) => {

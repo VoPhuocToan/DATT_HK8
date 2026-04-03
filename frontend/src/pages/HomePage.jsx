@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import api from '../services/api';
 import ProductCard from '../components/ProductCard';
 import FlashSale from '../components/FlashSale';
+import HeroBanner from '../components/HeroBanner';
 import RecentlyViewed from '../components/RecentlyViewed';
 
 const HomePage = () => {
@@ -18,17 +18,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <section className="hero tgdd-banner card">
-        <div className="hero-copy">
-          <p className="hero-badge">danganhshop x mùa sale tháng 3</p>
-          <h1>iPhone 17e</h1>
-          <p>Đủ tính năng. Đầy giá trị. Chỉ từ 17.990.000đ</p>
-          <Link to="/dien-thoai" className="btn hero-cta">
-            Mua ngay
-          </Link>
-        </div>
-        <div className="hero-visual" aria-hidden="true" />
-      </section>
+      <HeroBanner />
 
       <FlashSale />
 

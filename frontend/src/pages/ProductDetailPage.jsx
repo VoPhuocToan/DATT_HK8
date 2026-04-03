@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import { addToRecentlyViewed } from '../components/RecentlyViewed';
 import { useWishlist } from '../context/WishlistContext';
+import { getImageUrl } from '../utils/imageUrl';
 
 /* ── Star rating display ── */
 const Stars = ({ rating, size = 16 }) => {
@@ -31,12 +32,17 @@ const RatingBar = ({ label, count, total }) => (
   </div>
 );
 
-const MOCK_REVIEWS = [
-  { id: 1, name: 'Nguyễn Văn A', rating: 5, comment: 'Sản phẩm rất tốt, đóng gói cẩn thận, giao hàng nhanh!', date: '2026-03-15T12:10:00Z' },
-  { id: 2, name: 'Trần Thị B', rating: 4, comment: 'Máy đẹp, chạy mượt. Hài lòng với sản phẩm.', date: '2026-03-10T09:30:00Z' },
-];
-
 const COLORS = ['Titan', 'Trắng', 'Đen', 'Xanh'];
+
+/* ── Star picker ── */
+const StarPicker = ({ value, onChange }) => (
+  <span className="pd-star-picker">
+    {[1,2,3,4,5].map((s) => (
+      <span key={s} onClick={() => onChange(s)}
+        style={{ fontSize: 28, cursor: 'pointer', color: s <= value ? '#f59e0b' : '#d1d5db' }}>★</span>
+    ))}
+  </span>
+);
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -48,24 +54,53 @@ const ProductDetailPage = () => {
   const [related, setRelated] = useState([]);
   const [mainImg, setMainImg] = useState(0);
   const [tab, setTab] = useState('desc'); // desc | specs | reviews
-  const [relatedTab, setRelatedTab] = useState('similar');
   const [liked, setLiked] = useState(false);
   const [selectedColor, setSelectedColor] = useState(0);
+  const [selectedStorage, setSelectedStorage] = useState(0);
   const [qty, setQty] = useState(1);
   const [addedMsg, setAddedMsg] = useState('');
+
+  // Reviews
+  const [reviews, setReviews] = useState([]);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [reviewMsg, setReviewMsg] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const loadReviews = (productId) => {
+    api.get(`/reviews/by-product?product=${productId}`).then(({ data }) => setReviews(data)).catch(() => {});
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     api.get(`/products/${slug}`).then(({ data }) => {
       setProduct(data);
       setMainImg(0);
+      setSelectedColor(0);
+      setSelectedStorage(0);
       addToRecentlyViewed(data);
-      // Load related
+      loadReviews(data._id);
       api.get(`/products?limit=5`).then(({ data: rd }) => {
         setRelated((rd.items || []).filter((p) => p.slug !== slug));
       });
     });
   }, [slug]);
+
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    if (!reviewForm.comment.trim()) return;
+    setSubmitting(true);
+    try {
+      await api.post('/reviews', { productId: product._id, ...reviewForm });
+      setReviewMsg('Cảm ơn bạn đã đánh giá!');
+      setReviewForm({ rating: 5, comment: '' });
+      loadReviews(product._id);
+    } catch (err) {
+      setReviewMsg(err.response?.data?.message || 'Lỗi gửi đánh giá');
+    } finally {
+      setSubmitting(false);
+      setTimeout(() => setReviewMsg(''), 3000);
+    }
+  };
 
   if (!product) return <div className="pd-loading">Đang tải sản phẩm...</div>;
 
@@ -83,10 +118,10 @@ const ProductDetailPage = () => {
 
   const ratingCounts = [5, 4, 3, 2, 1].map((s) => ({
     star: s,
-    count: MOCK_REVIEWS.filter((r) => r.rating === s).length,
+    count: reviews.filter((r) => r.rating === s).length,
   }));
-  const avgRating = MOCK_REVIEWS.length
-    ? (MOCK_REVIEWS.reduce((s, r) => s + r.rating, 0) / MOCK_REVIEWS.length).toFixed(1)
+  const avgRating = reviews.length
+    ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
     : 0;
 
   return (
@@ -102,22 +137,12 @@ const ProductDetailPage = () => {
         <div className="pd-gallery">
           <h1 className="pd-title">{product.name}</h1>
 
-          <div className="pd-quick-actions">
-            <button className={`pd-action-btn ${isLiked(product._id) ? 'liked' : ''}`} onClick={() => toggle(product)}>
-              {isLiked(product._id) ? '❤️' : '🤍'} Yêu thích
-            </button>
-            <span className="pd-action-sep">|</span>
-            <button className="pd-action-btn" onClick={() => setTab('desc')}>💬 Hỏi đáp</button>
-            <span className="pd-action-sep">|</span>
-            <button className="pd-action-btn" onClick={() => setTab('specs')}>📋 Thông số</button>
-            <span className="pd-action-sep">|</span>
-            <button className="pd-action-btn">⚖️ So sánh</button>
-          </div>
+
 
           {/* Main image */}
           <div className="pd-main-img-wrap">
             <img
-              src={product.images?.[mainImg] || '/iphone-17_1.webp'}
+              src={getImageUrl(product.images?.[mainImg]) || '/iphone-17_1.webp'}
               alt={product.name}
               className="pd-main-img"
             />
@@ -132,7 +157,7 @@ const ProductDetailPage = () => {
                   className={`pd-thumb ${mainImg === i ? 'active' : ''}`}
                   onClick={() => setMainImg(i)}
                 >
-                  <img src={img} alt={`${product.name} ${i + 1}`} />
+                  <img src={getImageUrl(img)} alt={`${product.name} ${i + 1}`} />
                 </button>
               ))}
             </div>
@@ -150,37 +175,41 @@ const ProductDetailPage = () => {
           </div>
 
           {/* Màu sắc */}
-          <div className="pd-section">
-            <div className="pd-variant-row-label">Màu sắc</div>
-            <div className="pd-color-swatches">
-              {product.images?.map((img, i) => (
-                <button
-                  key={i}
-                  className={`pd-swatch-btn ${selectedColor === i ? 'active' : ''}`}
-                  onClick={() => { setSelectedColor(i); setMainImg(i); }}
-                  style={{ backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                  aria-label={`Màu ${i + 1}`}
-                >
-                  {selectedColor === i && <span className="pd-swatch-check">✓</span>}
-                </button>
-              ))}
+          {product.colors?.length > 0 && (
+            <div className="pd-section">
+              <div className="pd-variant-row-label">Màu sắc: <strong>{product.colors[selectedColor]}</strong></div>
+              <div className="pd-color-swatches">
+                {product.colors.map((color, i) => (
+                  <button
+                    key={i}
+                    className={`pd-color-text-btn ${selectedColor === i ? 'active' : ''}`}
+                    onClick={() => { setSelectedColor(i); if (product.images?.[i]) setMainImg(i); }}
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Bộ nhớ */}
-          {spec.storage && (
+          {product.storageOptions?.length > 0 && (
             <div className="pd-section">
               <div className="pd-variant-row-label">Bộ nhớ</div>
               <div className="pd-storage-btns">
-                {[spec.storage, spec.storage === '128 GB' ? '256 GB' : '128 GB'].map((s, i) => (
-                  <button
-                    key={i}
-                    className={`pd-storage-btn ${i === 0 ? 'active' : ''}`}
-                  >
-                    {spec.ram ? `${spec.ram.replace(' ', '')}-${s.replace(' ', '')}` : s}
-                    <span className="pd-storage-check">✓</span>
-                  </button>
-                ))}
+                {product.storageOptions.map((s, i) => {
+                  const label = typeof s === 'string' ? s : (s.ram ? `${s.ram}/${s.rom}` : s.rom);
+                  return (
+                    <button
+                      key={i}
+                      className={`pd-storage-btn ${selectedStorage === i ? 'active' : ''}`}
+                      onClick={() => setSelectedStorage(i)}
+                    >
+                      {label}
+                      {selectedStorage === i && <span className="pd-storage-check">✓</span>}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -225,7 +254,7 @@ const ProductDetailPage = () => {
           {[
             { key: 'desc', label: 'Mô tả' },
             { key: 'specs', label: 'Thông số kỹ thuật' },
-            { key: 'reviews', label: `Đánh giá (${MOCK_REVIEWS.length})` },
+            { key: 'reviews', label: `Đánh giá (${reviews.length})` },
           ].map((t) => (
             <button key={t.key} className={`pd-tab ${tab === t.key ? 'active' : ''}`} onClick={() => setTab(t.key)}>
               {t.label}
@@ -288,28 +317,58 @@ const ProductDetailPage = () => {
                 <div className="pd-rating-big">
                   <div className="pd-rating-num">{avgRating}</div>
                   <Stars rating={Number(avgRating)} size={24} />
-                  <div className="pd-rating-based">Dựa trên {MOCK_REVIEWS.length} đánh giá</div>
+                  <div className="pd-rating-based">Dựa trên {reviews.length} đánh giá</div>
                 </div>
                 <div className="pd-rating-bars">
                   {ratingCounts.map((r) => (
-                    <RatingBar key={r.star} label={r.star} count={r.count} total={MOCK_REVIEWS.length} />
+                    <RatingBar key={r.star} label={r.star} count={r.count} total={reviews.length} />
                   ))}
                 </div>
               </div>
 
+              {/* Form gửi đánh giá — chỉ user đã đăng nhập */}
+              {user ? (
+                <form className="pd-review-form" onSubmit={handleSubmitReview}>
+                  <h4>Viết đánh giá của bạn</h4>
+                  <StarPicker value={reviewForm.rating} onChange={(v) => setReviewForm((f) => ({ ...f, rating: v }))} />
+                  <textarea
+                    className="pd-review-textarea"
+                    placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."
+                    value={reviewForm.comment}
+                    onChange={(e) => setReviewForm((f) => ({ ...f, comment: e.target.value }))}
+                    rows={3}
+                    required
+                  />
+                  {reviewMsg && <p className="pd-review-msg">{reviewMsg}</p>}
+                  <button type="submit" className="pd-review-submit" disabled={submitting}>
+                    {submitting ? 'Đang gửi...' : 'Gửi đánh giá'}
+                  </button>
+                </form>
+              ) : (
+                <p className="pd-review-login-note">
+                  <Link to="/login">Đăng nhập</Link> để gửi đánh giá
+                </p>
+              )}
+
               <div className="pd-review-list">
-                {MOCK_REVIEWS.map((r) => (
-                  <div key={r.id} className="pd-review-item">
+                {reviews.length === 0 && <p className="pd-no-reviews">Chưa có đánh giá nào.</p>}
+                {reviews.map((r) => (
+                  <div key={r._id} className="pd-review-item">
                     <div className="pd-review-header">
-                      <span className="pd-review-name">{r.name}</span>
+                      <span className="pd-review-name">{r.user?.name || 'Ẩn danh'}</span>
                       <span className="pd-review-date">
-                        {new Date(r.date).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}{' '}
-                        {new Date(r.date).toLocaleDateString('vi-VN')}
+                        {new Date(r.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}{' '}
+                        {new Date(r.createdAt).toLocaleDateString('vi-VN')}
                       </span>
                     </div>
                     <Stars rating={r.rating} size={16} />
                     <p className="pd-review-comment">{r.comment}</p>
-                    <button className="pd-reply-btn">↩ Trả lời đánh giá</button>
+                    {r.adminReply && (
+                      <div className="pd-admin-reply">
+                        <span className="pd-admin-reply-label">💬 Phản hồi từ cửa hàng:</span>
+                        <p>{r.adminReply}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -322,14 +381,6 @@ const ProductDetailPage = () => {
       {related.length > 0 && (
         <div className="pd-related">
           <h2 className="pd-related-title">Có thể bạn cũng thích</h2>
-          <div className="pd-related-tabs">
-            <button className={`pd-rtab ${relatedTab === 'similar' ? 'active' : ''}`} onClick={() => setRelatedTab('similar')}>
-              Sản phẩm tương tự
-            </button>
-            <button className={`pd-rtab ${relatedTab === 'trade' ? 'active' : ''}`} onClick={() => setRelatedTab('trade')}>
-              Tham khảo hàng cũ
-            </button>
-          </div>
           <div className="grid products-grid">
             {related.slice(0, 5).map((p) => (
               <ProductCard key={p._id} product={p} />

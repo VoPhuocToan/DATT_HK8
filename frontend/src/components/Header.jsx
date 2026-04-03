@@ -3,6 +3,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import SearchBox from './SearchBox';
+import {
+  IconCart, IconUser, IconSettings, IconShoppingBag,
+  IconHeart, IconLogOut, IconPhone, IconLaptop,
+  IconHeadphones, IconWatch, IconTablet, IconFileText,
+  IconStore
+} from './Icons';
 
 const Header = () => {
   const { user, logout } = useAuth();
@@ -58,7 +64,7 @@ const Header = () => {
           {/* Actions */}
           <div className="header-actions">
             <NavLink to="/cart" className="header-action-btn">
-              <span className="header-action-icon">🛒</span>
+              <span className="header-action-icon"><IconCart size={20} /></span>
               <span className="header-action-label">Giỏ hàng</span>
               {cartCount > 0 && <span className="header-cart-badge">{cartCount}</span>}
             </NavLink>
@@ -66,41 +72,41 @@ const Header = () => {
             {user ? (
               <div className="header-action-btn header-user-wrap" ref={dropdownRef}>
                 <div className="header-user-trigger" onClick={toggleDropdown}>
-                  <span className="header-user-avatar">👤</span>
+                  <span className="header-user-avatar"><IconUser size={20} /></span>
                   <span className="header-action-label">{user.name}</span>
                   <span className="header-user-caret">▾</span>
                 </div>
                 <div className={`header-user-dropdown ${isDropdownOpen ? 'show' : ''}`}>
                   <div className="header-user-dropdown-header">
-                    <span className="header-user-avatar-lg">👤</span>
+                    <span className="header-user-avatar-lg"><IconUser size={28} /></span>
                     <span className="header-user-dropdown-name">{user.name}</span>
                   </div>
                   <div className="header-user-dropdown-body">
                     {user.role === 'admin' && (
                       <NavLink to="/admin" className="hud-item" onClick={handleDropdownItemClick}>
-                        <span className="hud-icon">⚙️</span> Quản trị
+                        <span className="hud-icon"><IconSettings size={15} /></span> Quản trị
                       </NavLink>
                     )}
                     <NavLink to="/profile" className="hud-item" onClick={handleDropdownItemClick}>
-                      <span className="hud-icon">👤</span> Thông tin cá nhân
+                      <span className="hud-icon"><IconUser size={15} /></span> Thông tin cá nhân
                     </NavLink>
                     <NavLink to="/orders" className="hud-item" onClick={handleDropdownItemClick}>
-                      <span className="hud-icon">🛍️</span> Đơn hàng của tôi
+                      <span className="hud-icon"><IconShoppingBag size={15} /></span> Đơn hàng của tôi
                     </NavLink>
                     <NavLink to="/wishlist" className="hud-item" onClick={handleDropdownItemClick}>
-                      <span className="hud-icon">❤️</span> Sản phẩm yêu thích
+                      <span className="hud-icon"><IconHeart size={15} /></span> Sản phẩm yêu thích
                     </NavLink>
                   </div>
                   <div className="header-user-dropdown-footer">
                     <button onClick={handleLogout} className="hud-logout">
-                      <span className="hud-icon">↪️</span> Đăng xuất
+                      <span className="hud-icon"><IconLogOut size={15} /></span> Đăng xuất
                     </button>
                   </div>
                 </div>
               </div>
             ) : (
               <Link to="/login" className="header-action-btn">
-                <span className="header-action-icon">👤</span>
+                <span className="header-action-icon"><IconUser size={20} /></span>
                 <span className="header-action-label">Đăng nhập</span>
               </Link>
             )}
@@ -113,13 +119,14 @@ const Header = () => {
         <div className="container">
           <nav className="header-nav">
             <NavLink to="/" end>Trang chủ</NavLink>
-            <NavLink to="/dien-thoai">📱 Điện thoại</NavLink>
-            <NavLink to="/laptops">💻 Laptop</NavLink>
-            <NavLink to="/accessories">🎧 Phụ kiện</NavLink>
-            <NavLink to="/smartwatch">⌚ Smartwatch</NavLink>
-            <NavLink to="/tablet">📟 Tablet</NavLink>
-            <NavLink to="/blog">📝 Bài viết</NavLink>
-            <NavLink to="/contact">📞 Liên hệ</NavLink>
+            <NavLink to="/products"><IconStore size={15} /> Tất cả</NavLink>
+            <NavLink to="/dien-thoai"><IconPhone size={15} /> Điện thoại</NavLink>
+            <NavLink to="/laptops"><IconLaptop size={15} /> Laptop</NavLink>
+            <NavLink to="/accessories"><IconHeadphones size={15} /> Phụ kiện</NavLink>
+            <NavLink to="/smartwatch"><IconWatch size={15} /> Smartwatch</NavLink>
+            <NavLink to="/tablet"><IconTablet size={15} /> Tablet</NavLink>
+            <NavLink to="/blog"><IconFileText size={15} /> Bài viết</NavLink>
+            <NavLink to="/contact"><IconPhone size={15} /> Liên hệ</NavLink>
           </nav>
         </div>
       </div>

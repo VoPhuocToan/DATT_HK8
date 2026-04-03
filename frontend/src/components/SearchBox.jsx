@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { IconSearch, IconLoader } from './Icons';
 
 const SearchBox = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -81,7 +82,7 @@ const SearchBox = () => {
   return (
     <div className="search-box" ref={searchRef}>
       <form onSubmit={handleSearch} className="search-form">
-        <span className="search-icon">🔍</span>
+        <span className="search-icon"><IconSearch size={16} /></span>
         <input
           type="text"
           className="search-input"
@@ -94,7 +95,7 @@ const SearchBox = () => {
             }
           }}
         />
-        {isLoading && <span className="search-loading">⏳</span>}
+        {isLoading && <span className="search-loading"><IconLoader size={16} /></span>}
       </form>
 
       {showSuggestions && suggestions.length > 0 && (

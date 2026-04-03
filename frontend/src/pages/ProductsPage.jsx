@@ -201,20 +201,6 @@ const ProductsPage = ({ categorySlug, pageTitle }) => {
       <div className="plp-header">
         <h1 className="plp-title">{pageTitle || 'Sản phẩm'}</h1>
         
-        {/* Search trong trang */}
-        <div className="plp-search-section">
-          <form onSubmit={handleSearch} className="plp-search-form">
-            <input
-              type="text"
-              className="plp-search-input"
-              placeholder="Tìm kiếm sản phẩm..."
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-            />
-            <button type="submit" className="plp-search-btn">🔍</button>
-          </form>
-        </div>
-        
         <div className="plp-sort-row">
           <span className="plp-sort-label">Sắp xếp:</span>
           {SORT_OPTIONS.map((o) => (

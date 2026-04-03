@@ -20,6 +20,9 @@ import ProductsPage from './pages/ProductsPage';
 import ProfilePage from './pages/ProfilePage';
 import WishlistPage from './pages/WishlistPage';
 import RegisterPage from './pages/RegisterPage';
+import PaymentQRPage from './pages/PaymentQRPage';
+import PaymentSuccessPage from './pages/PaymentSuccessPage';
+import PaymentCancelPage from './pages/PaymentCancelPage';
 
 const App = () => {
   return (
@@ -48,6 +51,9 @@ const App = () => {
               <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/wishlist" element={<WishlistPage />} />
+              <Route path="/payment/qr/:orderId" element={<ProtectedRoute><PaymentQRPage /></ProtectedRoute>} />
+              <Route path="/payment/success" element={<PaymentSuccessPage />} />
+              <Route path="/payment/cancel" element={<PaymentCancelPage />} />
               <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
               <Route path="/admin/products" element={<AdminRoute><Navigate to="/admin" replace /></AdminRoute>} />
               <Route path="/admin/orders" element={<AdminRoute><Navigate to="/admin" replace /></AdminRoute>} />

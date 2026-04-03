@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { IconCreditCard, IconMapPin, IconPhone, IconShoppingBag, IconCheck, IconEdit, IconArrowLeft, IconInfo } from '../components/Icons';
 
 const fmt = (n) => new Intl.NumberFormat('vi-VN').format(n) + ' đ';
 const FREE_SHIP = 500000;
@@ -80,15 +81,23 @@ const CheckoutPage = () => {
     if (!addressFilled) { alert('Vui lòng điền đầy đủ địa chỉ nhận hàng.'); return; }
     setSubmitting(true);
     try {
-      await api.post('/orders', {
+      const orderResponse = await api.post('/orders', {
         shippingAddress: { fullName: form.fullName, phone: form.phone, city: form.city, district: form.district, ward: form.ward, detail: form.detail },
         paymentMethod: form.paymentMethod,
         note: form.note,
         shippingFee,
         selectedProductIds: selectedIds, // Gửi danh sách ID sản phẩm được chọn
       });
+      
       await fetchCart();
-      navigate('/orders');
+      
+      // Nếu chọn thanh toán chuyển khoản, chuyển đến trang QR
+      if (form.paymentMethod === 'bank_transfer') {
+        navigate(`/payment/qr/${orderResponse.data._id}`);
+      } else {
+        // COD - chuyển đến trang đơn hàng
+        navigate('/orders');
+      }
     } catch (err) {
       alert(err.response?.data?.message || 'Đặt hàng thất bại, vui lòng thử lại.');
     } finally {
@@ -98,7 +107,7 @@ const CheckoutPage = () => {
 
   return (
     <div className="ck-page">
-      <h1 className="ck-title">💳 Xác nhận thanh toán</h1>
+      <h1 className="ck-title"><IconCreditCard size={22} style={{ verticalAlign: 'middle', marginRight: 8 }} />Xác nhận thanh toán</h1>
 
       <div className="ck-layout">
         {/* ── Cột trái ── */}
@@ -106,14 +115,14 @@ const CheckoutPage = () => {
 
           {/* Địa chỉ nhận hàng */}
           <div className="ck-section">
-            <h2 className="ck-section-title">📍 Địa chỉ nhận hàng</h2>
+            <h2 className="ck-section-title"><IconMapPin size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} />Địa chỉ nhận hàng</h2>
 
             {!editAddress && addressFilled ? (
               <div className="ck-address-card">
                 <div className="ck-address-name">{form.fullName}</div>
-                <div className="ck-address-row">📞 {form.phone}</div>
-                <div className="ck-address-row">📍 {addressDisplay}</div>
-                <button className="ck-edit-btn" onClick={() => setEditAddress(true)}>✏️ Thay đổi</button>
+                <div className="ck-address-row"><IconPhone size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />{form.phone}</div>
+                <div className="ck-address-row"><IconMapPin size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />{addressDisplay}</div>
+                <button className="ck-edit-btn" onClick={() => setEditAddress(true)}><IconEdit size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Thay đổi</button>
               </div>
             ) : (
               <div className="ck-address-form">
@@ -148,7 +157,7 @@ const CheckoutPage = () => {
                   </div>
                 </div>
                 {addressFilled && (
-                  <button className="ck-save-addr-btn" onClick={() => setEditAddress(false)}>✅ Lưu địa chỉ</button>
+                  <button className="ck-save-addr-btn" onClick={() => setEditAddress(false)}><IconCheck size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Lưu địa chỉ</button>
                 )}
               </div>
             )}
@@ -156,7 +165,7 @@ const CheckoutPage = () => {
 
           {/* Sản phẩm đã chọn */}
           <div className="ck-section">
-            <h2 className="ck-section-title">🛍️ Sản phẩm đã chọn</h2>
+            <h2 className="ck-section-title"><IconShoppingBag size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} />Sản phẩm đã chọn</h2>
             <div className="ck-items">
               {selectedItems.map((item) => {
                 const p = item.product;
@@ -232,7 +241,7 @@ const CheckoutPage = () => {
               <option value="bank_transfer">Chuyển khoản ngân hàng</option>
             </select>
             {form.paymentMethod === 'bank_transfer' && (
-              <div className="ck-bank-note">ℹ️ Chuyển khoản qua PayOS: Quét mã QR hoặc chuyển khoản trực tiếp</div>
+              <div className="ck-bank-note"><IconInfo size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Chuyển khoản qua PayOS: Quét mã QR hoặc chuyển khoản trực tiếp</div>
             )}
           </div>
 
@@ -254,10 +263,10 @@ const CheckoutPage = () => {
             onClick={handleSubmit}
             disabled={submitting || selectedItems.length === 0}
           >
-            {submitting ? 'Đang xử lý...' : '✅ Xác nhận đặt hàng'}
+            {submitting ? 'Đang xử lý...' : <><IconCheck size={15} style={{ verticalAlign: 'middle', marginRight: 6 }} />Xác nhận đặt hàng</>}
           </button>
 
-          <Link to="/cart" className="ck-back-btn">← Quay lại giỏ hàng</Link>
+          <Link to="/cart" className="ck-back-btn"><IconArrowLeft size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Quay lại giỏ hàng</Link>
         </aside>
       </div>
     </div>

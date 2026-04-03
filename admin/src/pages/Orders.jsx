@@ -69,7 +69,21 @@ const Orders = () => {
               <p><strong>Email:</strong> {selected.user?.email}</p>
               <p><strong>SĐT:</strong> {selected.shippingAddress?.phone}</p>
               <p><strong>Địa chỉ:</strong> {selected.shippingAddress?.detail}, {selected.shippingAddress?.ward}, {selected.shippingAddress?.district}, {selected.shippingAddress?.city}</p>
-              <p><strong>Thanh toán:</strong> {selected.paymentMethod === 'cod' ? 'Tiền mặt (COD)' : 'Chuyển khoản'}</p>
+              <p><strong>Thanh toán:</strong> {selected.paymentMethod === 'cod' ? 'Tiền mặt (COD)' : 'Chuyển khoản PayOS'}</p>
+              <p><strong>Trạng thái thanh toán:</strong> 
+                <span style={{ 
+                  color: selected.paymentStatus === 'paid' ? '#10b981' : 
+                         selected.paymentStatus === 'failed' ? '#ef4444' : '#f59e0b',
+                  fontWeight: 'bold',
+                  marginLeft: '8px'
+                }}>
+                  {selected.paymentStatus === 'paid' ? 'Đã thanh toán' : 
+                   selected.paymentStatus === 'failed' ? 'Thanh toán thất bại' : 'Chưa thanh toán'}
+                </span>
+              </p>
+              {selected.paymentOrderCode && (
+                <p><strong>Mã thanh toán PayOS:</strong> {selected.paymentOrderCode}</p>
+              )}
               <p><strong>Ghi chú:</strong> {selected.note || '—'}</p>
               <table className="table" style={{ marginTop: 12 }}>
                 <thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th></tr></thead>
@@ -112,7 +126,18 @@ const Orders = () => {
                       <div style={{ fontSize: 12, color: '#6b7280' }}>{order.user?.email}</div>
                     </td>
                     <td>{Number(order.totalPrice).toLocaleString('vi-VN')}đ</td>
-                    <td>{order.paymentMethod === 'cod' ? 'COD' : 'Chuyển khoản'}</td>
+                    <td>
+                      <div>{order.paymentMethod === 'cod' ? 'COD' : 'PayOS'}</div>
+                      <div style={{ 
+                        fontSize: 11, 
+                        color: order.paymentStatus === 'paid' ? '#10b981' : 
+                               order.paymentStatus === 'failed' ? '#ef4444' : '#f59e0b',
+                        fontWeight: 'bold'
+                      }}>
+                        {order.paymentStatus === 'paid' ? '✓ Đã thanh toán' : 
+                         order.paymentStatus === 'failed' ? '✗ Thất bại' : '⏳ Chưa thanh toán'}
+                      </div>
+                    </td>
                     <td>
                       <select
                         value={order.orderStatus}

@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-
-// Các khung giờ flash sale
-const SESSIONS = [
-  { label: '20-22h 21/03', start: new Date('2026-03-21T20:00:00'), end: new Date('2026-03-21T22:00:00') },
-  { label: '20-22h 22/03', start: new Date('2026-03-22T20:00:00'), end: new Date('2026-03-22T22:00:00') },
-];
+import { IconZap } from './Icons';
 
 const useCountdown = (target) => {
   const [diff, setDiff] = useState(Math.max(0, target - Date.now()));
@@ -22,95 +17,66 @@ const useCountdown = (target) => {
 };
 
 const FlashSale = () => {
-  const [tab, setTab] = useState('flash'); // flash | hot
-  const [sessionIdx, setSessionIdx] = useState(0);
-  const [flashProducts, setFlashProducts] = useState([]);
-  const [hotProducts, setHotProducts] = useState([]);
+  const [session, setSession] = useState(null); // session đang active
   const [slideIdx, setSlideIdx] = useState(0);
   const sliderRef = useRef(null);
 
-  const countdown = useCountdown(SESSIONS[sessionIdx].end.getTime());
-
   useEffect(() => {
-    api.get('/products?limit=20').then(({ data }) => {
-      const all = data.items || [];
-      const withSale = all.filter((p) => p.salePrice > 0);
-      const noSale = all.filter((p) => !p.salePrice || p.salePrice === 0);
-      setFlashProducts(withSale.length ? withSale : all.slice(0, 10));
-      setHotProducts(noSale.length ? noSale : all.slice(0, 10));
-    });
+    api.get('/flash-sale/active').then(({ data }) => {
+      // Lấy session đầu tiên đang chạy
+      if (data && data.length > 0) setSession(data[0]);
+    }).catch(() => {});
   }, []);
 
-  const products = tab === 'flash' ? flashProducts : hotProducts;
+  const countdown = useCountdown(session ? new Date(session.endTime).getTime() : Date.now());
+
+  if (!session || !session.items || session.items.length === 0) return null;
+
+  const products = session.items.filter((it) => it.product);
   const VISIBLE = 5;
   const maxSlide = Math.max(0, products.length - VISIBLE);
 
-  const slide = (dir) => {
-    setSlideIdx((prev) => Math.min(Math.max(prev + dir, 0), maxSlide));
-  };
-
-  const pct = (p) =>
-    p.salePrice > 0 && p.price > 0
-      ? Math.round((1 - p.salePrice / p.price) * 100)
-      : 0;
-
-  const sold = (p) => Math.floor(Math.random() * 40 + 5); // mock
-  const total = 50;
+  const slide = (dir) => setSlideIdx((prev) => Math.min(Math.max(prev + dir, 0), maxSlide));
 
   return (
     <div className="fs-wrapper">
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="fs-header">
         <div className="fs-tabs">
-          <button className={`fs-tab ${tab === 'flash' ? 'active' : ''}`} onClick={() => { setTab('flash'); setSlideIdx(0); }}>
-            ⚡ FLASHSALE
-          </button>
-          <button className={`fs-tab ${tab === 'hot' ? 'active' : ''}`} onClick={() => { setTab('hot'); setSlideIdx(0); }}>
-            🔥 HOTSALE
-          </button>
+          <button className="fs-tab active"><IconZap size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />FLASH SALE</button>
         </div>
       </div>
 
-      {/* ── Sub-header: sessions + countdown ── */}
+      {/* Sub-header: tên session + countdown */}
       <div className="fs-subheader">
         <div className="fs-sessions">
-          {SESSIONS.map((s, i) => (
-            <button
-              key={i}
-              className={`fs-session-btn ${sessionIdx === i ? 'active' : ''}`}
-              onClick={() => setSessionIdx(i)}
-            >
-              {s.label}
-            </button>
-          ))}
+          <span className="fs-session-name-label">{session.name}</span>
         </div>
-
         <div className="fs-countdown">
-          <span className="fs-countdown-label">BẮT ĐẦU SAU</span>
+          <span className="fs-countdown-label">KẾT THÚC SAU</span>
           <div className="fs-clock">
             <span className="fs-digit">{countdown.h}</span>
             <span className="fs-sep">:</span>
             <span className="fs-digit">{countdown.m}</span>
             <span className="fs-sep">:</span>
             <span className="fs-digit">{countdown.s}</span>
-            <span className="fs-sep">:</span>
-            <span className="fs-digit">{countdown.ms}</span>
           </div>
-          <span className="fs-pct-icon">%</span>
         </div>
       </div>
 
-      {/* ── Product slider ── */}
+      {/* Product slider */}
       <div className="fs-slider-wrap">
         {slideIdx > 0 && (
           <button className="fs-arrow left" onClick={() => slide(-1)}>‹</button>
         )}
 
         <div className="fs-slider" ref={sliderRef}>
-          {products.slice(slideIdx, slideIdx + VISIBLE).map((p) => {
-            const discount = pct(p);
-            const soldCount = sold(p);
-            const displayPrice = p.salePrice > 0 ? p.salePrice : p.price;
+          {products.slice(slideIdx, slideIdx + VISIBLE).map((item) => {
+            const p = item.product;
+            const displayPrice = item.flashSalePrice;
+            const discount = p.price > 0 ? Math.round((1 - displayPrice / p.price) * 100) : 0;
+            const soldCount = item.flashSaleSold || 0;
+            const total = item.flashSaleStock || 50;
             return (
               <Link to={`/products/${p.slug}`} key={p._id} className="fs-card">
                 <div className="fs-img-wrap">
@@ -121,13 +87,13 @@ const FlashSale = () => {
                   <p className="fs-name">{p.name}</p>
                   <div className="fs-prices">
                     <span className="fs-sale-price">{Number(displayPrice).toLocaleString('vi-VN')}đ</span>
-                    {p.salePrice > 0 && (
+                    {discount > 0 && (
                       <span className="fs-old-price">{Number(p.price).toLocaleString('vi-VN')}đ</span>
                     )}
                   </div>
                   <div className="fs-progress-wrap">
                     <div className="fs-progress-bar">
-                      <div className="fs-progress-fill" style={{ width: `${Math.min((soldCount / total) * 100, 100)}%` }} />
+                      <div className="fs-progress-fill" style={{ width: `${Math.min((soldCount / Math.max(total, 1)) * 100, 100)}%` }} />
                     </div>
                     <span className="fs-sold-label">Đã bán {soldCount}/{total} suất</span>
                   </div>
@@ -142,9 +108,9 @@ const FlashSale = () => {
         )}
       </div>
 
-      {/* ── Footer note ── */}
+      {/* Footer note */}
       <div className="fs-footer">
-        Chi áp dụng thanh toán online thành công — Mỗi SĐT chỉ được mua 1 sản phẩm cùng loại
+        Chỉ áp dụng thanh toán online thành công — Mỗi SĐT chỉ được mua 1 sản phẩm cùng loại
       </div>
     </div>
   );

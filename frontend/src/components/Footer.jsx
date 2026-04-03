@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { IconPhone, IconMail } from './Icons';
 
 const Footer = () => (
   <footer className="site-footer">
@@ -19,10 +20,10 @@ const Footer = () => (
           <ul>
             <li><Link to="/contact">Liên hệ</Link></li>
             <li>
-              <span className="footer-icon">📞</span> Hotline: 1900-xxxx
+              <span className="footer-icon"><IconPhone size={13} /></span> Hotline: 1900-xxxx
             </li>
             <li>
-              <span className="footer-icon">✉️</span> support@danganhshop.com
+              <span className="footer-icon"><IconMail size={13} /></span> support@danganhshop.com
             </li>
           </ul>
         </div>

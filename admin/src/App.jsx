@@ -11,6 +11,10 @@ import Discounts from './pages/Discounts';
 import Statistics from './pages/Statistics';
 import Support from './pages/Support';
 import Revenue from './pages/Revenue';
+import FlashSale from './pages/FlashSale';
+import Reviews from './pages/Reviews';
+import Articles from './pages/Articles';
+import Banners from './pages/Banners';
 
 const PAGES = {
   dashboard: Dashboard,
@@ -22,6 +26,10 @@ const PAGES = {
   statistics: Statistics,
   support: Support,
   revenue: Revenue,
+  flashsale: FlashSale,
+  reviews: Reviews,
+  articles: Articles,
+  banners: Banners,
 };
 
 const AdminApp = () => {

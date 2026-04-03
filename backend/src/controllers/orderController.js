@@ -46,6 +46,8 @@ const createOrder = async (req, res) => {
     subtotal,
     totalPrice,
     note,
+    // Đặt trạng thái thanh toán dựa trên phương thức thanh toán
+    paymentStatus: paymentMethod === 'bank_transfer' ? 'pending' : 'pending'
   });
 
   // Chỉ xóa những sản phẩm đã được đặt hàng khỏi giỏ hàng

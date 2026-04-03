@@ -91,7 +91,32 @@ const updateProduct = async (req, res) => {
     return res.status(404).json({ message: 'Product not found' });
   }
 
-  Object.assign(product, req.body);
+  const { colors, storageOptions, specifications, images, ...rest } = req.body;
+
+  console.log('[updateProduct] colors:', colors);
+  console.log('[updateProduct] storageOptions:', storageOptions);
+
+  // Cập nhật các field thông thường
+  Object.assign(product, rest);
+
+  // Cập nhật array/object fields một cách tường minh
+  if (colors !== undefined) {
+    product.colors = colors;
+    product.markModified('colors');
+  }
+  if (storageOptions !== undefined) {
+    product.storageOptions = storageOptions;
+    product.markModified('storageOptions');
+  }
+  if (specifications !== undefined) {
+    product.specifications = specifications;
+    product.markModified('specifications');
+  }
+  if (images !== undefined) {
+    product.images = images;
+    product.markModified('images');
+  }
+
   await product.save();
   return res.json(product);
 };
@@ -114,6 +139,24 @@ const toggleVisibility = async (req, res) => {
   return res.json({ isVisible: product.isVisible });
 };
 
+const getFlashSaleProducts = async (req, res) => {
+  const products = await Product.find({ isFlashSale: true, isVisible: { $ne: false } })
+    .populate('category', 'name slug')
+    .sort({ createdAt: -1 });
+  return res.json(products);
+};
+
+const toggleFlashSale = async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) return res.status(404).json({ message: 'Product not found' });
+  const { isFlashSale, flashSalePrice, flashSaleStock } = req.body;
+  product.isFlashSale = isFlashSale !== undefined ? isFlashSale : !product.isFlashSale;
+  if (flashSalePrice !== undefined) product.flashSalePrice = flashSalePrice;
+  if (flashSaleStock !== undefined) product.flashSaleStock = flashSaleStock;
+  await product.save();
+  return res.json(product);
+};
+
 module.exports = {
   getProducts,
   getProductBySlug,
@@ -121,4 +164,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   toggleVisibility,
+  getFlashSaleProducts,
+  toggleFlashSale,
 };

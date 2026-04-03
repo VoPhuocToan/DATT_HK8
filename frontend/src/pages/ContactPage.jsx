@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { IconCheck, IconMapPin, IconPhone, IconMail } from '../components/Icons';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: 'Câu hỏi chung', message: '', agree: false });
@@ -31,7 +32,7 @@ const ContactPage = () => {
           <h2 className="ct-form-title">Gửi tin nhắn cho chúng tôi</h2>
           <p className="ct-form-sub">Điền thông tin liên lạc và chúng tôi sẽ liên hệ lại với bạn sớm nhất có thể!</p>
 
-          {sent && <div className="ct-success-msg">✅ Tin nhắn đã được gửi! Chúng tôi sẽ phản hồi sớm nhất.</div>}
+          {sent && <div className="ct-success-msg"><IconCheck size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Tin nhắn đã được gửi! Chúng tôi sẽ phản hồi sớm nhất.</div>}
 
           <form className="ct-form" onSubmit={handleSubmit}>
             <div className="ct-form-row">
@@ -77,7 +78,7 @@ const ContactPage = () => {
               của Đặng Anh Shop
             </label>
             <button type="submit" className="ct-submit-btn">
-              ✉️ Gửi tin nhắn
+              <IconMail size={15} style={{ verticalAlign: 'middle', marginRight: 6 }} />Gửi tin nhắn
             </button>
           </form>
         </div>
@@ -102,19 +103,19 @@ const ContactPage = () => {
       {/* ── Info cards ── */}
       <div className="ct-info-cards">
         <div className="ct-info-card">
-          <div className="ct-info-icon" style={{ background: '#7c3aed' }}>📍</div>
+          <div className="ct-info-icon" style={{ background: '#7c3aed' }}><IconMapPin size={20} /></div>
           <h3>Địa chỉ</h3>
           <p>117 Nguyễn Thị Tú, Bình Tân</p>
           <p>TP. Hồ Chí Minh, Việt Nam</p>
         </div>
         <div className="ct-info-card">
-          <div className="ct-info-icon" style={{ background: '#7c3aed' }}>📞</div>
+          <div className="ct-info-icon" style={{ background: '#7c3aed' }}><IconPhone size={20} /></div>
           <h3>Điện thoại</h3>
           <p>Hotline: 1800-xxxx</p>
           <p>Tel: (0294) 1234 5678</p>
         </div>
         <div className="ct-info-card">
-          <div className="ct-info-icon" style={{ background: '#7c3aed' }}>✉️</div>
+          <div className="ct-info-icon" style={{ background: '#7c3aed' }}><IconMail size={20} /></div>
           <h3>Email</h3>
           <p>Support: support@danganhshop.com</p>
           <p>Sales: sales@danganhshop.com</p>

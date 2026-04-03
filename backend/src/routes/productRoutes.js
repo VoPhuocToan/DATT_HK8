@@ -6,11 +6,14 @@ const {
   updateProduct,
   deleteProduct,
   toggleVisibility,
+  getFlashSaleProducts,
+  toggleFlashSale,
 } = require('../controllers/productController');
 const { protect, adminOnly } = require('../middleware/auth');
 
 const router = express.Router();
 
+router.get('/flash-sale', getFlashSaleProducts);
 router.get('/', getProducts);
 router.get('/:slug', getProductBySlug);
 
@@ -18,5 +21,6 @@ router.post('/', protect, adminOnly, createProduct);
 router.put('/:id', protect, adminOnly, updateProduct);
 router.delete('/:id', protect, adminOnly, deleteProduct);
 router.patch('/:id/visibility', protect, adminOnly, toggleVisibility);
+router.patch('/:id/flash-sale', protect, adminOnly, toggleFlashSale);
 
 module.exports = router;
