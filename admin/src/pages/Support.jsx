@@ -1,18 +1,11 @@
-import { useState } from 'react';
-
-const MOCK_TICKETS = [
-  { id: 1, user: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com', subject: 'Đơn hàng chưa được giao', message: 'Tôi đặt hàng 3 ngày trước nhưng vẫn chưa nhận được hàng, nhờ admin kiểm tra giúp.', status: 'pending', createdAt: '2026-03-17T08:30:00Z' },
-  { id: 2, user: 'Trần Thị B', email: 'tranthib@gmail.com', subject: 'Sản phẩm bị lỗi', message: 'Sản phẩm tôi nhận được bị trầy xước, muốn đổi hàng mới.', status: 'processing', createdAt: '2026-03-16T14:20:00Z' },
-  { id: 3, user: 'Lê Văn C', email: 'levanc@gmail.com', subject: 'Hỏi về chính sách hoàn tiền', message: 'Tôi muốn hủy đơn hàng và hoàn tiền, quy trình như thế nào?', status: 'resolved', createdAt: '2026-03-15T10:00:00Z' },
-  { id: 4, user: 'Phạm Thị D', email: 'phamthid@gmail.com', subject: 'Không đăng nhập được', message: 'Tôi quên mật khẩu và không nhận được email đặt lại mật khẩu.', status: 'closed', createdAt: '2026-03-14T09:15:00Z' },
-  { id: 5, user: 'Hoàng Văn E', email: 'hoangvane@gmail.com', subject: 'Thanh toán bị lỗi', message: 'Tôi đã thanh toán nhưng đơn hàng vẫn hiển thị chưa thanh toán.', status: 'pending', createdAt: '2026-03-18T07:45:00Z' },
-];
+import { useState, useEffect } from 'react';
+import api from '../services/api';
 
 const STATUS_MAP = {
-  pending:    { label: 'Chờ xử lý',   bg: '#fef3c7', color: '#d97706', icon: '🟡' },
-  processing: { label: 'Đang xử lý',  bg: '#dbeafe', color: '#2563eb', icon: '🔵' },
+  pending:    { label: 'Chờ xử lý',    bg: '#fef3c7', color: '#d97706', icon: '🟡' },
+  processing: { label: 'Đang xử lý',   bg: '#dbeafe', color: '#2563eb', icon: '🔵' },
   resolved:   { label: 'Đã giải quyết', bg: '#d1fae5', color: '#059669', icon: '🟢' },
-  closed:     { label: 'Đã đóng',     bg: '#f1f5f9', color: '#64748b', icon: '⚫' },
+  closed:     { label: 'Đã đóng',      bg: '#f1f5f9', color: '#64748b', icon: '⚫' },
 };
 
 const StatusBadge = ({ status }) => {
@@ -21,11 +14,24 @@ const StatusBadge = ({ status }) => {
 };
 
 const Support = () => {
-  const [tickets, setTickets] = useState(MOCK_TICKETS);
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [reply, setReply] = useState('');
+  const [saving, setSaving] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
   const [search, setSearch] = useState('');
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get('/support');
+      setTickets(data);
+    } catch { setTickets([]); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { load(); }, []);
 
   const counts = {
     pending:    tickets.filter((t) => t.status === 'pending').length,
@@ -36,22 +42,32 @@ const Support = () => {
 
   const filtered = tickets.filter((t) => {
     const matchStatus = filterStatus === 'all' || t.status === filterStatus;
-    const matchSearch = t.user.toLowerCase().includes(search.toLowerCase()) ||
-      t.subject.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = t.name?.toLowerCase().includes(search.toLowerCase()) ||
+      t.subject?.toLowerCase().includes(search.toLowerCase());
     return matchStatus && matchSearch;
   });
 
-  const handleUpdateStatus = (id, status) => {
-    setTickets((prev) => prev.map((t) => t.id === id ? { ...t, status } : t));
-    if (selected?.id === id) setSelected((t) => ({ ...t, status }));
+  const handleUpdateStatus = async (id, status) => {
+    try {
+      const { data } = await api.put(`/support/${id}`, { status });
+      setTickets((prev) => prev.map((t) => t._id === id ? data : t));
+      if (selected?._id === id) setSelected(data);
+    } catch { alert('Cập nhật thất bại.'); }
   };
 
-  const handleReply = () => {
+  const handleReply = async () => {
     if (!reply.trim()) return;
-    alert(`Đã gửi phản hồi tới ${selected.email}:\n"${reply}"`);
-    setReply('');
-    handleUpdateStatus(selected.id, 'resolved');
-    setSelected(null);
+    setSaving(true);
+    try {
+      const { data } = await api.put(`/support/${selected._id}`, {
+        adminReply: reply,
+        status: 'resolved',
+      });
+      setTickets((prev) => prev.map((t) => t._id === data._id ? data : t));
+      setSelected(null);
+      setReply('');
+    } catch { alert('Gửi phản hồi thất bại.'); }
+    finally { setSaving(false); }
   };
 
   return (
@@ -99,10 +115,18 @@ const Support = () => {
                   {new Date(selected.createdAt).toLocaleString('vi-VN')}
                 </span>
               </div>
-              <div className="support-info-row"><span>Khách hàng:</span><strong>{selected.user}</strong></div>
+              <div className="support-info-row"><span>Khách hàng:</span><strong>{selected.name}</strong></div>
               <div className="support-info-row"><span>Email:</span><a href={`mailto:${selected.email}`}>{selected.email}</a></div>
+              {selected.phone && <div className="support-info-row"><span>SĐT:</span>{selected.phone}</div>}
               <div className="support-info-row"><span>Tiêu đề:</span><strong>{selected.subject}</strong></div>
               <div className="support-msg-box">{selected.message}</div>
+
+              {selected.adminReply && (
+                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '10px 14px', fontSize: 13 }}>
+                  <div style={{ fontWeight: 700, color: '#059669', marginBottom: 4 }}>Phản hồi đã gửi:</div>
+                  {selected.adminReply}
+                </div>
+              )}
 
               <div className="field">
                 <label>Phản hồi khách hàng</label>
@@ -110,16 +134,18 @@ const Support = () => {
               </div>
 
               <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   {Object.entries(STATUS_MAP).map(([k, s]) => (
                     <button key={k} className="btn-sm btn-outline"
                       style={selected.status === k ? { borderColor: s.color, color: s.color } : {}}
-                      onClick={() => handleUpdateStatus(selected.id, k)}>
+                      onClick={() => handleUpdateStatus(selected._id, k)}>
                       {s.label}
                     </button>
                   ))}
                 </div>
-                <button className="btn-primary" onClick={handleReply}>Gửi phản hồi</button>
+                <button className="btn-primary" onClick={handleReply} disabled={saving}>
+                  {saving ? 'Đang gửi...' : 'Gửi phản hồi'}
+                </button>
               </div>
             </div>
           </div>
@@ -128,43 +154,45 @@ const Support = () => {
 
       {/* Ticket list */}
       <div className="card">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Khách hàng</th>
-              <th>Tiêu đề</th>
-              <th>Trạng thái</th>
-              <th>Ngày gửi</th>
-              <th>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 && (
-              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#94a3b8', padding: 24 }}>Không có yêu cầu nào</td></tr>
-            )}
-            {filtered.map((t) => (
-              <tr key={t.id}>
-                <td style={{ color: '#94a3b8', fontSize: 12 }}>#{t.id}</td>
-                <td>
-                  <div style={{ fontWeight: 500 }}>{t.user}</div>
-                  <div style={{ fontSize: 12, color: '#94a3b8' }}>{t.email}</div>
-                </td>
-                <td>{t.subject}</td>
-                <td><StatusBadge status={t.status} /></td>
-                <td style={{ fontSize: 12, color: '#64748b' }}>{new Date(t.createdAt).toLocaleDateString('vi-VN')}</td>
-                <td>
-                  <div className="action-cell">
-                    <button className="btn-sm btn-primary" onClick={() => { setSelected(t); setReply(''); }}>Xem</button>
-                    {t.status === 'pending' && (
-                      <button className="btn-sm btn-outline" onClick={() => handleUpdateStatus(t.id, 'processing')}>Tiếp nhận</button>
-                    )}
-                  </div>
-                </td>
+        {loading ? <div className="page-loading">Đang tải...</div> : (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Khách hàng</th>
+                <th>Tiêu đề</th>
+                <th>Trạng thái</th>
+                <th>Ngày gửi</th>
+                <th>Thao tác</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.length === 0 && (
+                <tr><td colSpan={6} style={{ textAlign: 'center', color: '#94a3b8', padding: 24 }}>Không có yêu cầu nào</td></tr>
+              )}
+              {filtered.map((t, i) => (
+                <tr key={t._id}>
+                  <td style={{ color: '#94a3b8', fontSize: 12 }}>#{i + 1}</td>
+                  <td>
+                    <div style={{ fontWeight: 500 }}>{t.name}</div>
+                    <div style={{ fontSize: 12, color: '#94a3b8' }}>{t.email}</div>
+                  </td>
+                  <td>{t.subject}</td>
+                  <td><StatusBadge status={t.status} /></td>
+                  <td style={{ fontSize: 12, color: '#64748b' }}>{new Date(t.createdAt).toLocaleDateString('vi-VN')}</td>
+                  <td>
+                    <div className="action-cell">
+                      <button className="btn-sm btn-primary" onClick={() => { setSelected(t); setReply(''); }}>Xem</button>
+                      {t.status === 'pending' && (
+                        <button className="btn-sm btn-outline" onClick={() => handleUpdateStatus(t._id, 'processing')}>Tiếp nhận</button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

@@ -122,7 +122,8 @@ const OrdersPage = () => {
             const ps = PAYMENT_STATUS_MAP[order.paymentStatus] || PAYMENT_STATUS_MAP.pending;
             const addr = order.shippingAddress || {};
             const isExpanded = expanded[order._id] !== false; // mặc định mở
-            const canCancel = ['pending', 'confirmed'].includes(order.orderStatus);
+            const isPaidBankTransfer = order.paymentMethod === 'bank_transfer' && order.paymentStatus === 'paid';
+            const canCancel = ['pending', 'confirmed'].includes(order.orderStatus) && !isPaidBankTransfer;
             const date = new Date(order.createdAt);
             const dateStr = `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')} ${date.toLocaleDateString('vi-VN')}`;
 

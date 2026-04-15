@@ -34,11 +34,8 @@ const CheckoutPage = () => {
     paymentMethod: 'cod',
     note: '',
   });
-  const [couponMsg, setCouponMsg] = useState('');
-  const [discount, setDiscount] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
-  const [coupon, setCoupon] = useState('');
 
   // Load địa chỉ đã lưu từ profile
   useEffect(() => {
@@ -60,22 +57,12 @@ const CheckoutPage = () => {
   const set = (field, val) => setForm((f) => ({ ...f, [field]: val }));
 
   const shippingFee = cartTotal >= FREE_SHIP ? 0 : 30000;
-  const total = cartTotal - discount + shippingFee;
+  const total = cartTotal + shippingFee;
 
   const addressFilled = form.fullName && form.phone && form.city && form.district && form.detail;
   const addressDisplay = addressFilled
     ? `${form.detail}, ${form.ward ? form.ward + ', ' : ''}${form.district}, ${form.city}`
     : null;
-
-  const handleApplyCoupon = () => {
-    if (coupon.toUpperCase() === 'SALE10') {
-      setDiscount(Math.round(cartTotal * 0.1));
-      setCouponMsg('Áp dụng thành công! Giảm 10%');
-    } else {
-      setDiscount(0);
-      setCouponMsg('Mã giảm giá không hợp lệ');
-    }
-  };
 
   const handleSubmit = async () => {
     if (!addressFilled) { alert('Vui lòng điền đầy đủ địa chỉ nhận hàng.'); return; }
@@ -191,37 +178,12 @@ const CheckoutPage = () => {
         <aside className="ck-summary">
           <h2 className="ck-summary-title">Thông tin đơn hàng</h2>
 
-          {/* Mã giảm giá */}
-          <div className="ck-coupon-wrap">
-            <label className="ck-label">Mã giảm giá</label>
-            <div className="ck-coupon-row">
-              <input
-                className="ck-coupon-input"
-                placeholder="Nhập mã giảm giá"
-                value={coupon}
-                onChange={(e) => setCoupon(e.target.value)}
-              />
-              <button className="ck-coupon-btn" onClick={handleApplyCoupon}>Áp dụng</button>
-            </div>
-            {couponMsg && (
-              <div className={`ck-coupon-msg ${couponMsg.includes('thành công') ? 'success' : 'error'}`}>
-                {couponMsg}
-              </div>
-            )}
-          </div>
-
           {/* Tóm tắt giá */}
           <div className="ck-price-rows">
             <div className="ck-price-row">
               <span>Tạm tính:</span>
               <span>{fmt(cartTotal)}</span>
             </div>
-            {discount > 0 && (
-              <div className="ck-price-row ck-discount-row">
-                <span>Giảm giá:</span>
-                <span>- {fmt(discount)}</span>
-              </div>
-            )}
             <div className="ck-price-row">
               <span>Phí vận chuyển:</span>
               <span className={shippingFee === 0 ? 'ck-free' : ''}>{shippingFee === 0 ? 'Miễn phí' : fmt(shippingFee)}</span>

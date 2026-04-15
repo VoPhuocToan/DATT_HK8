@@ -96,6 +96,8 @@ const cancelOrder = async (req, res) => {
     return res.status(403).json({ message: 'Forbidden' });
   if (!['pending', 'confirmed'].includes(order.orderStatus))
     return res.status(400).json({ message: 'Không thể hủy đơn hàng ở trạng thái này' });
+  if (order.paymentMethod === 'bank_transfer' && order.paymentStatus === 'paid')
+    return res.status(400).json({ message: 'Đơn hàng đã thanh toán qua chuyển khoản không thể hủy' });
   order.orderStatus = 'cancelled';
   await order.save();
   return res.json(order);

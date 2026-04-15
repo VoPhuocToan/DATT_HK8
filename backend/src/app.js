@@ -15,6 +15,7 @@ const flashSaleRoutes = require('./routes/flashSaleRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const articleRoutes = require('./routes/articleRoutes');
 const bannerRoutes = require('./routes/bannerRoutes');
+const supportRoutes = require('./routes/supportRoutes');
 const { notFound, errorHandler } = require('./middleware/error');
 
 const app = express();
@@ -44,6 +45,7 @@ app.use('/api/flash-sale', flashSaleRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/banners', bannerRoutes);
+app.use('/api/support', supportRoutes);
 
 // Serve static files (hình ảnh từ frontend/public — bao gồm cả ảnh upload mới)
 const frontendPublic = path.join(__dirname, '../../frontend/public');

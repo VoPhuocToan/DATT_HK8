@@ -1,17 +1,35 @@
 import { useState } from 'react';
 import { IconCheck, IconMapPin, IconPhone, IconMail } from '../components/Icons';
+import api from '../services/api';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: 'Câu hỏi chung', message: '', agree: false });
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    setForm({ name: '', email: '', phone: '', subject: 'Câu hỏi chung', message: '', agree: false });
+    setError('');
+    setSubmitting(true);
+    try {
+      await api.post('/support', {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        subject: form.subject,
+        message: form.message,
+      });
+      setSent(true);
+      setTimeout(() => setSent(false), 5000);
+      setForm({ name: '', email: '', phone: '', subject: 'Câu hỏi chung', message: '', agree: false });
+    } catch {
+      setError('Gửi tin nhắn thất bại. Vui lòng thử lại.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -33,6 +51,7 @@ const ContactPage = () => {
           <p className="ct-form-sub">Điền thông tin liên lạc và chúng tôi sẽ liên hệ lại với bạn sớm nhất có thể!</p>
 
           {sent && <div className="ct-success-msg"><IconCheck size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Tin nhắn đã được gửi! Chúng tôi sẽ phản hồi sớm nhất.</div>}
+          {error && <div className="ct-error-msg">{error}</div>}
 
           <form className="ct-form" onSubmit={handleSubmit}>
             <div className="ct-form-row">
@@ -77,8 +96,9 @@ const ContactPage = () => {
               <a href="#" className="ct-link">Chính sách quyền riêng tư</a>{' '}
               của Đặng Anh Shop
             </label>
-            <button type="submit" className="ct-submit-btn">
-              <IconMail size={15} style={{ verticalAlign: 'middle', marginRight: 6 }} />Gửi tin nhắn
+            <button type="submit" className="ct-submit-btn" disabled={submitting}>
+              <IconMail size={15} style={{ verticalAlign: 'middle', marginRight: 6 }} />
+              {submitting ? 'Đang gửi...' : 'Gửi tin nhắn'}
             </button>
           </form>
         </div>

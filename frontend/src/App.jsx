@@ -15,6 +15,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import OrdersPage from './pages/OrdersPage';
+import OrderDetailPage from './pages/OrderDetailPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import ProductsPage from './pages/ProductsPage';
 import ProfilePage from './pages/ProfilePage';
@@ -49,6 +50,7 @@ const App = () => {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
               <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
+              <Route path="/orders/:id" element={<ProtectedRoute><OrderDetailPage /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/payment/qr/:orderId" element={<ProtectedRoute><PaymentQRPage /></ProtectedRoute>} />
